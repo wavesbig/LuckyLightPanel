@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useConfigStore, PRESET_BACKGROUNDS } from '@/stores/config'
-import { X, Sun, Moon, Monitor, RotateCcw, Palette, Eye, Check, Image } from 'lucide-vue-next'
+import { X, Sun, Moon, Monitor, RotateCcw, Palette, Eye, Check, Image, Github } from 'lucide-vue-next'
 import type { ThemeMode } from '@/types'
 
 const configStore = useConfigStore()
@@ -195,6 +195,17 @@ const themeOptions: { value: ThemeMode; label: string; icon: typeof Sun; color: 
           <RotateCcw class="reset-icon" />
           <span>重置所有设置</span>
         </button>
+        
+        <!-- 开源地址 -->
+        <a 
+          href="https://github.com/gdy666/LuckyLightPanel" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="github-link"
+        >
+          <Github class="github-icon" />
+          <span>开源地址</span>
+        </a>
       </div>
     </div>
   </Transition>
@@ -562,5 +573,30 @@ const themeOptions: { value: ThemeMode; label: string; icon: typeof Sun; color: 
 
 .reset-btn:hover .reset-icon {
   transform: rotate(-180deg);
+}
+
+/* 开源地址链接 */
+.github-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  color: hsl(var(--text-muted));
+  text-decoration: none;
+  transition: all 200ms;
+}
+
+.github-link:hover {
+  color: hsl(var(--text-primary));
+  background: hsl(var(--glass-bg-hover));
+}
+
+.github-icon {
+  width: 1rem;
+  height: 1rem;
 }
 </style>
