@@ -265,7 +265,7 @@ function getGroupIconClass(icon?: string): string {
         <!-- 服务网格 -->
         <div :class="gridClass">
           <ServiceCard
-            v-for="(service, idx) in item.services"
+            v-for="service in item.services"
             :key="service.key"
             :service="service"
             :list-max-widths="listMaxWidths"
@@ -287,7 +287,7 @@ function getGroupIconClass(icon?: string): string {
       <!-- Lucky 服务网格 -->
       <div :class="gridClass">
         <ServiceCard
-          v-for="(service, index) in filteredServices"
+          v-for="service in filteredServices"
           :key="service.key"
           :service="service"
           :list-max-widths="listMaxWidths"

@@ -176,7 +176,7 @@ function getGroupIconClass(icon?: string): string {
         <!-- 站点网格 -->
         <div :class="gridClass">
           <SiteCard
-            v-for="(site, idx) in item.sites"
+            v-for="site in item.sites"
             :key="site.key"
             :site="site"
             class="animate-fade-in-up"
@@ -197,7 +197,7 @@ function getGroupIconClass(icon?: string): string {
       <!-- 站点网格 -->
       <div :class="gridClass">
         <SiteCard
-          v-for="(site, index) in filteredSites"
+          v-for="site in filteredSites"
           :key="site.key"
           :site="site"
           class="animate-fade-in-up"

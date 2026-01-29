@@ -279,7 +279,7 @@ function getGroupIconClass(icon?: string): string {
         <!-- 容器网格 -->
         <div :class="gridClass">
           <DockerCard
-            v-for="(container, idx) in item.containers"
+            v-for="container in item.containers"
             :key="container.key"
             :container="container"
             :list-max-widths="listMaxWidths"
@@ -301,7 +301,7 @@ function getGroupIconClass(icon?: string): string {
       <!-- Docker 容器网格 -->
       <div :class="gridClass">
         <DockerCard
-          v-for="(container, index) in filteredContainers"
+          v-for="container in filteredContainers"
           :key="container.key"
           :container="container"
           :list-max-widths="listMaxWidths"
