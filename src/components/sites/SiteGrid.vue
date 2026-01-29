@@ -180,7 +180,6 @@ function getGroupIconClass(icon?: string): string {
             :key="site.key"
             :site="site"
             class="animate-fade-in-up"
-            :style="{ animationDelay: `${idx * 50}ms` }"
           />
         </div>
       </div>
@@ -202,7 +201,6 @@ function getGroupIconClass(icon?: string): string {
           :key="site.key"
           :site="site"
           class="animate-fade-in-up"
-          :style="{ animationDelay: `${index * 50}ms` }"
         />
       </div>
       <!-- 空状态 -->

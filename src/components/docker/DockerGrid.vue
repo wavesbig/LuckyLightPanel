@@ -284,7 +284,6 @@ function getGroupIconClass(icon?: string): string {
             :container="container"
             :list-max-widths="listMaxWidths"
             class="animate-fade-in-up"
-            :style="{ animationDelay: `${idx * 50}ms` }"
           />
         </div>
       </div>
@@ -307,7 +306,6 @@ function getGroupIconClass(icon?: string): string {
           :container="container"
           :list-max-widths="listMaxWidths"
           class="animate-fade-in-up"
-          :style="{ animationDelay: `${index * 50}ms` }"
         />
       </div>
       <!-- 空状态 -->

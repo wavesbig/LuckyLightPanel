@@ -27,6 +27,7 @@
 /* 动画工具类 */
 .animate-fade-in-up {
   animation: fadeInUp var(--duration-slow) var(--ease-out) forwards;
+  /* 移除了动画延迟，所有卡片将同时淡入，避免依次闪烁效果 */
 }
 
 .animate-fade-in-scale {
