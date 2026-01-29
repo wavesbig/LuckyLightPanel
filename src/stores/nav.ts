@@ -25,7 +25,8 @@ const API = {
   dockerStats: './backend/docker-stats.json',
   luckyServices: './backend/luckyservices.json',
   luckyServicesStats: './backend/luckyservices-stats.json',
-  networkType: './backend/api/network-type'
+  networkType: './backend/api/network-type',
+  config: './backend/default-config.json'
 }
 
 export const useNavStore = defineStore('nav', () => {
@@ -51,6 +52,9 @@ export const useNavStore = defineStore('nav', () => {
   const luckyServicesData = ref<LuckyServicesData | null>(null)
   const luckyServicesStats = ref<Map<string, LuckyServiceStat>>(new Map())
   const luckyServicesStatsTimer = ref<ReturnType<typeof setInterval> | null>(null)
+
+  // 配置数据
+  const serverConfig = ref<Record<string, any>>({}) // 服务器下发的用户配置
 
   // 计算属性：站点分组
   const siteGroups = computed<Group[]>(() => {
@@ -183,6 +187,31 @@ export const useNavStore = defineStore('nav', () => {
     }
   }
 
+  // 获取服务器配置
+  // 注意：此接口可能不存在（如开发模式或旧版本后端），需要优雅降级
+  async function fetchServerConfig(): Promise<Record<string, any> | null> {
+    try {
+      const response = await fetch(API.config)
+      if (!response.ok) {
+        // 404/500 等情况，静默失败，使用默认配置
+        console.log('Server config not available (HTTP %d), using defaults', response.status)
+        return null
+      }
+      const data = await response.json()
+      if (data.ret === 0) {
+        serverConfig.value = data.config || {}
+        console.log('Server config loaded:', serverConfig.value)
+        return data.config
+      } else {
+        console.log('Server config returned error (ret=%d), using defaults', data.ret)
+      }
+    } catch (error) {
+      // 网络错误、JSON解析错误等，静默失败
+      console.log('Failed to fetch server config, using defaults:', error instanceof Error ? error.message : error)
+    }
+    return null
+  }
+
   // 加载 Docker 统计
   async function loadDockerStats() {
     const data = await fetchJson<DockerStatsResponse>(API.dockerStats)
@@ -260,6 +289,7 @@ export const useNavStore = defineStore('nav', () => {
     dockerStats,
     luckyServicesData,
     luckyServicesStats,
+    serverConfig,
 
     // 计算属性
     siteGroups,
@@ -279,6 +309,7 @@ export const useNavStore = defineStore('nav', () => {
     // 方法
     loadAllData,
     fetchNetworkType,
+    fetchServerConfig,
     loadDockerStats,
     startDockerStatsPolling,
     stopDockerStatsPolling,

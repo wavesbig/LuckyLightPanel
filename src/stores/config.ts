@@ -52,8 +52,6 @@ const DEFAULT_CONFIG: UserConfig = {
   luckyServicesLayout: 'normal',
   showDescription: true,
   showTime: true,
-  showWelcome: true,
-  enableAnimation: true,
   tabGroups: { ...DEFAULT_TAB_GROUPS },
   networkMode: 'hybrid',
   currentTab: 'sites'
@@ -150,8 +148,6 @@ export const useConfigStore = defineStore('config', () => {
   })
   const showDescription = computed(() => config.value.showDescription)
   const showTime = computed(() => config.value.showTime)
-  const showWelcome = computed(() => config.value.showWelcome)
-  const enableAnimation = computed(() => config.value.enableAnimation)
   // 当前标签页的搜索关键字
   const currentSearchKeyword = computed(() => {
     const tab = config.value.currentTab
@@ -178,6 +174,50 @@ export const useConfigStore = defineStore('config', () => {
     const validThemes = ['light', 'dark', 'sketch-light', 'sketch-dark']
     if (!validThemes.includes(config.value.theme)) {
       config.value.theme = 'dark'
+      saveConfig()
+    }
+  }
+
+  // 应用服务器配置（作为默认值，仅在没有本地配置时使用）
+  // 如果服务器配置不可用或无效，将使用内置默认配置
+  function applyServerConfig(serverConfig: Record<string, unknown> | null | undefined) {
+    // 安全检查：配置不存在或为空
+    if (!serverConfig || typeof serverConfig !== 'object' || Object.keys(serverConfig).length === 0) {
+      console.log('No valid server config provided, using defaults')
+      return
+    }
+
+    // 如果已有本地配置，不覆盖
+    if (hasStoredConfig.value) {
+      console.log('Local config exists, skipping server config')
+      return
+    }
+
+    console.log('Applying server config as defaults:', serverConfig)
+    
+    // 应用配置模板中定义的字段
+    const validKeys: (keyof UserConfig)[] = [
+      'theme', 'background', 'layout', 'dockerLayout', 'luckyServicesLayout',
+      'networkMode', 'currentTab', 'showDescription', 'showTime'
+    ]
+
+    let hasChanges = false
+    for (const key of validKeys) {
+      if (key in serverConfig && serverConfig[key] !== undefined) {
+        try {
+          const value = serverConfig[key] as UserConfig[typeof key]
+          if (config.value[key] !== value) {
+            (config.value as any)[key] = value
+            hasChanges = true
+          }
+        } catch (e) {
+          // 忽略单个字段的错误，继续处理其他字段
+          console.warn(`Failed to apply server config field '${key}':`, e)
+        }
+      }
+    }
+
+    if (hasChanges) {
       saveConfig()
     }
   }
@@ -386,14 +426,13 @@ export const useConfigStore = defineStore('config', () => {
     isAllSelected,
     showDescription,
     showTime,
-    showWelcome,
-    enableAnimation,
     currentSearchKeyword,
 
     // 方法
     loadConfig,
     saveConfig,
     updateConfig,
+    applyServerConfig,
     setTheme,
     setLayout,
     setDockerLayout,

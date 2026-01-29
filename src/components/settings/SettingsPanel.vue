@@ -181,16 +181,6 @@ const isSketchTheme = computed(() =>
                 @click="configStore.updateConfig('showTime', !configStore.showTime)"
               />
             </label>
-            
-            <!-- 启用动画 -->
-            <label class="toggle-item">
-              <span class="toggle-label">启用动画</span>
-              <div 
-                class="switch-modern"
-                :class="{ active: configStore.enableAnimation }"
-                @click="configStore.updateConfig('enableAnimation', !configStore.enableAnimation)"
-              />
-            </label>
           </div>
         </section>
       </div>

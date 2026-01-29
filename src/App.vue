@@ -109,8 +109,20 @@ watch(
 
 // 初始化
 onMounted(async () => {
+  // 先加载本地配置（包含默认值）
   configStore.loadConfig()
-  await navStore.loadAllData()
+  
+  // 并行加载数据和服务器配置
+  const [, serverConfig] = await Promise.all([
+    navStore.loadAllData(),
+    navStore.fetchServerConfig()  // 失败时返回 null，不会影响正常运行
+  ])
+  
+  // 尝试应用服务器配置（仅在没有本地配置时生效）
+  // 如果服务器配置不可用，将使用内置默认配置
+  if (serverConfig) {
+    configStore.applyServerConfig(serverConfig)
+  }
   
   // 如果当前是自动或混合模式，调用接口重新识别网络类型
   const mode = configStore.networkMode

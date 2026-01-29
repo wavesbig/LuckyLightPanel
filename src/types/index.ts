@@ -204,8 +204,6 @@ export interface UserConfig {
   luckyServicesLayout: LayoutMode
   showDescription: boolean
   showTime: boolean
-  showWelcome: boolean
-  enableAnimation: boolean
   tabGroups: TabGroups
   networkMode: NetworkMode
   currentTab: TabType

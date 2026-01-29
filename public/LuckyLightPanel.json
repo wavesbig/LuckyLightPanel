@@ -1,0 +1,123 @@
+{
+  "name": "LuckyLightPanel",
+  "version": "1.0.0",
+  "description": "Lucky 轻面板前端模板配置",
+  "configSchema": {
+    "theme": {
+      "type": "select",
+      "label": "默认主题",
+      "description": "面板的默认主题样式",
+      "default": "dark",
+      "options": [
+        { "value": "dark", "label": "暗色" },
+        { "value": "light", "label": "亮色" },
+        { "value": "sketch-dark", "label": "素描暗色" },
+        { "value": "sketch-light", "label": "素描亮色" }
+      ]
+    },
+    "background": {
+      "type": "select",
+      "label": "默认背景",
+      "description": "面板的默认背景样式（素描主题不生效）,如果全局设置有背景图片，则此设置将被覆盖",
+      "default": "ocean",
+      "options": [
+        { "value": "cyber", "label": "赛博" },
+        { "value": "aurora", "label": "极光" },
+        { "value": "ocean", "label": "深海" },
+        { "value": "matrix", "label": "矩阵" },
+        { "value": "midnight", "label": "午夜" },
+        { "value": "neon", "label": "霓虹" },
+        { "value": "emerald", "label": "翡翠" },
+        { "value": "sunset", "label": "日落" },
+        { "value": "cosmic", "label": "宇宙" },
+        { "value": "slate", "label": "石板" }
+      ]
+    },
+    "layout": {
+      "type": "select",
+      "label": "站点布局",
+      "description": "站点卡片的默认布局模式",
+      "default": "normal",
+      "options": [
+        { "value": "compact", "label": "紧凑" },
+        { "value": "normal", "label": "标准" },
+        { "value": "large", "label": "大号" },
+        { "value": "list", "label": "列表" },
+        { "value": "minimal", "label": "极简" }
+      ]
+    },
+    "dockerLayout": {
+      "type": "select",
+      "label": "Docker布局",
+      "description": "Docker 容器卡片的默认布局模式",
+      "default": "list",
+      "options": [
+        { "value": "compact", "label": "紧凑" },
+        { "value": "normal", "label": "标准" },
+        { "value": "large", "label": "大号" },
+        { "value": "list", "label": "列表" },
+        { "value": "minimal", "label": "极简" }
+      ]
+    },
+    "luckyServicesLayout": {
+      "type": "select",
+      "label": "服务布局",
+      "description": "Lucky 服务卡片的默认布局模式",
+      "default": "normal",
+      "options": [
+        { "value": "compact", "label": "紧凑" },
+        { "value": "normal", "label": "标准" },
+        { "value": "large", "label": "大号" },
+        { "value": "list", "label": "列表" },
+        { "value": "minimal", "label": "极简" }
+      ]
+    },
+    "networkMode": {
+      "type": "select",
+      "label": "网络模式",
+      "description": "内外网链接的选择模式",
+      "default": "hybrid",
+      "options": [
+        { "value": "auto", "label": "自动识别" },
+        { "value": "internal", "label": "仅内网" },
+        { "value": "external", "label": "仅外网" },
+        { "value": "hybrid", "label": "混合显示" }
+      ]
+    },
+    "currentTab": {
+      "type": "select",
+      "label": "默认标签页",
+      "description": "面板加载时默认显示的标签页",
+      "default": "sites",
+      "options": [
+        { "value": "sites", "label": "站点" },
+        { "value": "docker", "label": "Docker" },
+        { "value": "luckyServices", "label": "服务" }
+      ]
+    },
+    "showDescription": {
+      "type": "boolean",
+      "label": "显示描述",
+      "description": "是否在卡片中显示描述文本",
+      "default": true
+    },
+    "showTime": {
+      "type": "boolean",
+      "label": "显示时间",
+      "description": "是否在页头显示当前时间",
+      "default": true
+    }
+  },
+  "presetBackgrounds": [
+    { "id": "cyber", "name": "赛博", "value": "linear-gradient(135deg, hsl(220 50% 4%) 0%, hsl(240 40% 8%) 50%, hsl(220 50% 4%) 100%)" },
+    { "id": "aurora", "name": "极光", "value": "linear-gradient(135deg, hsl(250 60% 40%) 0%, hsl(280 50% 35%) 50%, hsl(320 60% 40%) 100%)" },
+    { "id": "ocean", "name": "深海", "value": "linear-gradient(135deg, hsl(200 80% 25%) 0%, hsl(220 70% 40%) 100%)" },
+    { "id": "matrix", "name": "矩阵", "value": "linear-gradient(180deg, hsl(150 60% 4%) 0%, hsl(180 50% 3%) 100%)" },
+    { "id": "midnight", "name": "午夜", "value": "linear-gradient(135deg, hsl(220 50% 5%) 0%, hsl(230 45% 12%) 50%, hsl(240 40% 18%) 100%)" },
+    { "id": "neon", "name": "霓虹", "value": "linear-gradient(135deg, hsl(280 80% 35%) 0%, hsl(320 70% 40%) 50%, hsl(350 60% 45%) 100%)" },
+    { "id": "emerald", "name": "翡翠", "value": "linear-gradient(135deg, hsl(160 70% 25%) 0%, hsl(150 80% 40%) 100%)" },
+    { "id": "sunset", "name": "日落", "value": "linear-gradient(135deg, hsl(320 80% 40%) 0%, hsl(260 70% 50%) 52%, hsl(200 80% 50%) 100%)" },
+    { "id": "cosmic", "name": "宇宙", "value": "linear-gradient(135deg, hsl(250 60% 15%) 0%, hsl(280 50% 25%) 100%)" },
+    { "id": "slate", "name": "石板", "value": "linear-gradient(135deg, hsl(220 30% 8%) 0%, hsl(220 25% 15%) 50%, hsl(220 20% 20%) 100%)" }
+  ]
+}
