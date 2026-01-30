@@ -20,6 +20,9 @@
   --docker-orange: 25 70% 45%;
   --docker-orange-rgb: 195, 105, 45;
 
+  /* 透明图标占位背景 - 柔和浅灰 */
+  --icon-placeholder-bg: 220 15% 78%;
+
   /* 毛玻璃效果 - 通透清晰 */
   --glass-bg: 220 15% 92% / 0.82;
   --glass-bg-hover: 220 15% 95% / 0.88;

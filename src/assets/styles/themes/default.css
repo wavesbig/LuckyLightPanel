@@ -87,6 +87,9 @@
   --icon-brightness: 1;
   --icon-overlay-opacity: 0;
 
+  /* 透明图标占位背景 - 中性深灰 */
+  --icon-placeholder-bg: 220 25% 18%;
+
   /* 站点卡片专属样式 - 默认暗黑磨砂 */
   --site-card-bg: 220 25% 12% / 0.52;
   --site-card-bg-hover: 220 25% 15% / 0.6;

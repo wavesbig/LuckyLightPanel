@@ -25,6 +25,9 @@
   --icon-filter: url(#sketch-filter) grayscale(100%) contrast(1.1) brightness(0.9);
   --icon-filter-hover: url(#sketch-filter-hover) grayscale(100%) contrast(1.15) brightness(0.95);
 
+  /* 透明图标占位背景 - 素描纸张深色调 */
+  --icon-placeholder-bg: 40 8% 25%;
+
   /* 毛玻璃效果 - 纸张质感 */
   --glass-bg: 40 8% 12% / 0.95;
   --glass-bg-hover: 40 8% 15% / 0.97;

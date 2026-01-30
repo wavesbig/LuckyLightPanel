@@ -271,8 +271,7 @@ const iconClass = computed(() => {
       <div
         :class="iconClass"
         :style="{
-          background: `linear-gradient(135deg, hsl(${cardGradient.from}) 0%, hsl(${cardGradient.to}) 100%)`,
-          boxShadow: `0 4px 20px -4px hsl(${cardGradient.shadow} / 0.5)`
+          boxShadow: `0 4px 20px -4px hsl(var(--icon-placeholder-bg) / 0.5)`
         }"
       >
         <img
@@ -483,6 +482,8 @@ const iconClass = computed(() => {
   position: relative;
   transition: all var(--duration-normal) var(--ease-spring);
   filter: brightness(var(--icon-brightness, 1));
+  /* 使用主题适配的背景色 */
+  background: hsl(var(--icon-placeholder-bg));
 }
 
 /* 深色模式下的图标蒙版 */
