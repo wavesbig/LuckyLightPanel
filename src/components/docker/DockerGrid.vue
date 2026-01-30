@@ -454,4 +454,22 @@ onMounted(() => {
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.875rem;
 }
+
+/* 浅色主题适配 */
+[data-theme="light"] .empty-icon {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .empty-text {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+/* 素描浅色主题适配 */
+[data-theme="sketch-light"] .empty-icon {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="sketch-light"] .empty-text {
+  color: rgba(60, 50, 40, 0.5);
+}
 </style>

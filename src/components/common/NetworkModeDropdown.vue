@@ -244,6 +244,45 @@ onUnmounted(() => {
   background: rgba(0, 0, 0, 0.05);
 }
 
+/* 素描浅色主题适配 */
+[data-theme="sketch-light"] .network-badge {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 2px 8px -2px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="sketch-light"] .network-badge:hover {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(168, 85, 247, 0.35);
+}
+
+[data-theme="sketch-light"] .network-dropdown {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="sketch-light"] .network-option {
+  color: rgba(60, 50, 40, 0.85);
+}
+
+[data-theme="sketch-light"] .network-option:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* 素描深色主题适配 */
+[data-theme="sketch-dark"] .network-dropdown {
+  background: rgba(35, 30, 25, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
 /* 深色主题适配 */
 [data-theme="dark"] .network-dropdown {
   box-shadow: 

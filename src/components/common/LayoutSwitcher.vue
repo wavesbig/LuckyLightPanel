@@ -365,6 +365,115 @@ onUnmounted(() => {
   background: rgba(0, 0, 0, 0.03);
 }
 
+[data-theme="light"] .preview-line {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .preview-icon-lg {
+  background: rgba(6, 182, 212, 0.7);
+}
+
+[data-theme="light"] .preview-item-sm {
+  background: rgba(6, 182, 212, 0.5);
+}
+
+[data-theme="light"] .preview-row {
+  background: rgba(6, 182, 212, 0.5);
+}
+
+[data-theme="light"] .preview-dot {
+  background: rgba(6, 182, 212, 0.6);
+}
+
+/* 素描浅色主题适配 */
+[data-theme="sketch-light"] .layout-badge {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 2px 8px -2px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="sketch-light"] .layout-badge:hover {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(6, 182, 212, 0.35);
+}
+
+[data-theme="sketch-light"] .layout-dropdown {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="sketch-light"] .layout-option {
+  color: rgba(60, 50, 40, 0.85);
+}
+
+[data-theme="sketch-light"] .layout-option:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="sketch-light"] .layout-preview {
+  border-color: rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="sketch-light"] .preview-line {
+  background: rgba(60, 50, 40, 0.25);
+}
+
+[data-theme="sketch-light"] .preview-icon-lg {
+  background: rgba(60, 50, 40, 0.35);
+}
+
+[data-theme="sketch-light"] .preview-item-sm {
+  background: rgba(60, 50, 40, 0.25);
+}
+
+[data-theme="sketch-light"] .preview-row {
+  background: rgba(60, 50, 40, 0.25);
+}
+
+[data-theme="sketch-light"] .preview-dot {
+  background: rgba(60, 50, 40, 0.3);
+}
+
+/* 素描深色主题适配 */
+[data-theme="sketch-dark"] .layout-dropdown {
+  background: rgba(35, 30, 25, 0.95);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="sketch-dark"] .layout-preview {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="sketch-dark"] .preview-line {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="sketch-dark"] .preview-icon-lg {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+[data-theme="sketch-dark"] .preview-item-sm {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="sketch-dark"] .preview-row {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="sketch-dark"] .preview-dot {
+  background: rgba(255, 255, 255, 0.22);
+}
+
 /* 深色主题适配 */
 [data-theme="dark"] .layout-dropdown {
   box-shadow: 
