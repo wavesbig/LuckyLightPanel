@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useConfigStore, PRESET_BACKGROUNDS } from '@/stores/config'
-import { X, Sun, Moon, Pencil, RotateCcw, Palette, Eye, Check, Image, Github, Search, Globe, Layout } from 'lucide-vue-next'
+import { X, Sun, Moon, Pencil, RotateCcw, Palette, Eye, Check, Image, Github, Search, Globe } from 'lucide-vue-next'
 import type { ThemeMode } from '@/types'
 
 // 导入本地图标
