@@ -305,7 +305,7 @@ function saveCustomSearchUrl() {
 .settings-overlay {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: 200;
   background: rgba(0, 0, 0, 0.15);
 }
 
@@ -321,7 +321,7 @@ function saveCustomSearchUrl() {
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 50;
+  z-index: 200;
   height: 100%;
   width: 360px;
   max-width: 90vw;
