@@ -127,14 +127,6 @@ const gridClass = computed(() => {
   }
 })
 
-// 获取分组图标类名
-function getGroupIconClass(icon?: string): string {
-  if (!icon) return 'fas fa-folder'
-  if (icon.startsWith('fa-') || icon.startsWith('fas ') || icon.startsWith('far ') || icon.startsWith('fab ')) {
-    return icon.startsWith('fa-') ? `fas ${icon}` : icon
-  }
-  return `fas fa-${icon}`
-}
 </script>
 
 <template>
@@ -169,7 +161,6 @@ function getGroupIconClass(icon?: string): string {
       >
         <!-- 分组标题 -->
         <h3 class="group-title">
-          <i :class="getGroupIconClass(item.group.icon)" class="group-icon"></i>
           <span>{{ item.group.name }}</span>
           <span class="group-count">({{ item.sites.length }})</span>
         </h3>
@@ -252,11 +243,6 @@ function getGroupIconClass(icon?: string): string {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.group-icon {
-  font-size: 1rem;
-  opacity: 0.8;
 }
 
 .group-count {
