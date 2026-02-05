@@ -165,6 +165,13 @@ function formatSpeed(bytesPerSec: number): string {
   return `${(bytesPerSec / 1024 / 1024).toFixed(1)} M/s`
 }
 
+// 是否显示网速（只有Web服务有网速）
+const showSpeed = computed(() => {
+  return props.service.serviceType?.startsWith('webservice')
+})
+
+
+
 // 是否活跃
 const isActive = computed(() => {
   return serviceState.value === 'running' || serviceState.value === 'enabled'
@@ -280,7 +287,7 @@ const cardClass = computed(() => {
               <div class="stat-value in-value">
                 {{ formatTraffic(stats.trafficIn || 0) }}
               </div>
-              <div class="stat-speed in-speed">
+              <div v-if="showSpeed" class="stat-speed in-speed">
                 {{ formatSpeed(stats.inSpeed || 0) }}
               </div>
             </div>
@@ -294,7 +301,7 @@ const cardClass = computed(() => {
               <div class="stat-value out-value">
                 {{ formatTraffic(stats.trafficOut || 0) }}
               </div>
-              <div class="stat-speed out-speed">
+              <div v-if="showSpeed" class="stat-speed out-speed">
                 {{ formatSpeed(stats.outSpeed || 0) }}
               </div>
             </div>
