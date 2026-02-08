@@ -221,7 +221,7 @@ onMounted(async () => {
     <!-- 主区域 -->
     <main class="main-content" :class="{ 'no-header': !showHeader }">
       <!-- 聚合搜索栏 (仅在站点页面启用时显示) -->
-      <div class="mb-6">
+      <div v-if="configStore.showSearch" class="mb-6">
         <SearchBar />
       </div>
 
