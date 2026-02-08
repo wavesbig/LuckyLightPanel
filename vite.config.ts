@@ -19,7 +19,7 @@ export default defineConfig({
     proxy: {
       // 代理后端 API
       '/backend': {
-        target: 'http://127.0.0.1:16666/aaa/',
+        target: process.env.VITE_PROXY_TARGET || 'http://127.0.0.1:16666/aaa/',
         changeOrigin: true
       }
     }

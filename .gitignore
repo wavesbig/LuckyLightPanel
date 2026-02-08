@@ -3,3 +3,4 @@
 /node_modules/*
 /.qoder/*
 /.shared/*
+.env
