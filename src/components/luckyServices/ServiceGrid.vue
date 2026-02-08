@@ -4,9 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/nav'
 import { useConfigStore } from '@/stores/config'
 import ServiceCard from './ServiceCard.vue'
-import SearchBox from '@/components/common/SearchBox.vue'
-import GroupDropdown from '@/components/common/GroupDropdown.vue'
-import ServiceLayoutSwitcher from './ServiceLayoutSwitcher.vue'
+
 import type { LuckyService, Group } from '@/types'
 
 const navStore = useNavStore()
@@ -224,24 +222,7 @@ onMounted(() => {
 
 <template>
   <div class="service-section">
-    <!-- 分组筛选 -->
-    <div class="filter-bar">
-      <SearchBox
-        v-model="searchKeyword"
-        placeholder="搜索服务..."
-        color="green"
-      />
-      <div class="filter-bar-right">
-        <GroupDropdown
-          :groups="groups"
-          :current="configStore.currentGroup"
-          color="green"
-          @change="configStore.setCurrentGroup"
-          @toggle="configStore.toggleGroup"
-        />
-        <ServiceLayoutSwitcher />
-      </div>
-    </div>
+
 
     <!-- 全部模式或多选分组模式：按分组显示 -->
     <template v-if="configStore.isAllSelected || configStore.currentGroupArray.length > 1">

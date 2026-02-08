@@ -1,156 +1,198 @@
 <script setup lang="ts">
-import { onMounted, computed, watch, ref, provide } from 'vue'
-import { useNavStore } from '@/stores/nav'
-import { useConfigStore } from '@/stores/config'
-import type { TabType } from '@/types'
-import TechBackground from '@/components/common/TechBackground.vue'
-import LoadingScreen from '@/components/common/LoadingScreen.vue'
-import AppHeader from '@/components/layout/AppHeader.vue'
-import ContentTabs from '@/components/common/ContentTabs.vue'
-import SiteGrid from '@/components/sites/SiteGrid.vue'
-import DockerGrid from '@/components/docker/DockerGrid.vue'
-import ServiceGrid from '@/components/luckyServices/ServiceGrid.vue'
-import SettingsPanel from '@/components/settings/SettingsPanel.vue'
-import BackToTop from '@/components/common/BackToTop.vue'
-import LinkDropdown from '@/components/common/LinkDropdown.vue'
-import SearchBar from '@/components/common/SearchBar.vue'
-import { Settings } from 'lucide-vue-next'
+import { onMounted, computed, watch, ref, provide } from "vue";
+import { useNavStore } from "@/stores/nav";
+import { useConfigStore } from "@/stores/config";
+import type { TabType } from "@/types";
+import TechBackground from "@/components/common/TechBackground.vue";
+import LoadingScreen from "@/components/common/LoadingScreen.vue";
+import AppHeader from "@/components/layout/AppHeader.vue";
+import ContentTabs from "@/components/common/ContentTabs.vue";
+import SiteGrid from "@/components/sites/SiteGrid.vue";
+import DockerGrid from "@/components/docker/DockerGrid.vue";
+import ServiceGrid from "@/components/luckyServices/ServiceGrid.vue";
+import SettingsPanel from "@/components/settings/SettingsPanel.vue";
+import BackToTop from "@/components/common/BackToTop.vue";
+import LinkDropdown from "@/components/common/LinkDropdown.vue";
+import AppToolbar from "@/components/layout/AppToolbar.vue";
+import { Settings } from "lucide-vue-next";
 
-const navStore = useNavStore()
-const configStore = useConfigStore()
+const navStore = useNavStore();
+const configStore = useConfigStore();
 
 // 链接下拉菜单组件引用
-const linkDropdownRef = ref<InstanceType<typeof LinkDropdown> | null>(null)
+const linkDropdownRef = ref<InstanceType<typeof LinkDropdown> | null>(null);
 
 // 提供给子组件
-provide('linkDropdown', {
+provide("linkDropdown", {
   show: (site: any, urls: any[], target: HTMLElement) => {
-    linkDropdownRef.value?.show(site, urls, target)
-  }
-})
+    linkDropdownRef.value?.show(site, urls, target);
+  },
+});
 
 // 计算属性
-const isLoading = computed(() => navStore.isLoading)
-const currentTab = computed(() => configStore.currentTab)
+const isLoading = computed(() => navStore.isLoading);
+const currentTab = computed(() => configStore.currentTab);
 
 // 各标签页是否有数据
-const hasSites = computed(() => navStore.sitesEnabled && navStore.allSites.length > 0)
-const hasDocker = computed(() => navStore.dockerEnabled && navStore.allContainers.length > 0)
-const hasLuckyServices = computed(() => navStore.luckyServicesEnabled && navStore.allLuckyServices.length > 0)
-const showHeader = computed(() => configStore.showHeader)
+const hasSites = computed(
+  () => navStore.sitesEnabled && navStore.allSites.length > 0,
+);
+const hasDocker = computed(
+  () => navStore.dockerEnabled && navStore.allContainers.length > 0,
+);
+const hasLuckyServices = computed(
+  () => navStore.luckyServicesEnabled && navStore.allLuckyServices.length > 0,
+);
+const showHeader = computed(() => configStore.showHeader);
 
 // 获取第一个可用的标签页
 function getFirstAvailableTab(): TabType | null {
-  if (hasSites.value) return 'sites'
-  if (hasDocker.value) return 'docker'
-  if (hasLuckyServices.value) return 'luckyServices'
-  return null
+  if (hasSites.value) return "sites";
+  if (hasDocker.value) return "docker";
+  if (hasLuckyServices.value) return "luckyServices";
+  return null;
 }
 
 // 检查并修正当前标签页
 function ensureValidTab() {
-  const tab = currentTab.value
-  const isCurrentTabValid = 
-    (tab === 'sites' && hasSites.value) ||
-    (tab === 'docker' && hasDocker.value) ||
-    (tab === 'luckyServices' && hasLuckyServices.value)
-  
+  const tab = currentTab.value;
+  const isCurrentTabValid =
+    (tab === "sites" && hasSites.value) ||
+    (tab === "docker" && hasDocker.value) ||
+    (tab === "luckyServices" && hasLuckyServices.value);
+
   if (!isCurrentTabValid) {
-    const firstTab = getFirstAvailableTab()
+    const firstTab = getFirstAvailableTab();
     if (firstTab) {
-      configStore.setCurrentTab(firstTab)
+      configStore.setCurrentTab(firstTab);
     }
   }
 }
 
 // 拼接图标 URL
 function getIconUrl(path: string) {
-  if (!path) return ''
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path
+  if (!path) return "";
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
   }
-  return `./backend/iconlibs/${path}`
+  return `./backend/iconlibs/${path}`;
 }
 
 // 主题切换
 watch(
   () => configStore.effectiveTheme,
   (theme) => {
-    document.documentElement.setAttribute('data-theme', theme)
+    document.documentElement.setAttribute("data-theme", theme);
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 // 浏览器标题更新
 watch(
   () => navStore.panelTitle,
   (title) => {
     if (title) {
-      document.title = title
+      document.title = title;
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 // 浏览器 Favicon 更新
 watch(
   () => navStore.panelFavicon,
   (favicon) => {
     if (favicon) {
-      const faviconUrl = getIconUrl(favicon)
-      let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement
+      const faviconUrl = getIconUrl(favicon);
+      let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
       if (!link) {
-        link = document.createElement('link')
-        link.rel = 'icon'
-        document.head.appendChild(link)
+        link = document.createElement("link");
+        link.rel = "icon";
+        document.head.appendChild(link);
       }
-      link.href = faviconUrl
+      link.href = faviconUrl;
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 // 初始化
 onMounted(async () => {
   // 先加载本地配置（包含默认值）
-  configStore.loadConfig()
-  
+  configStore.loadConfig();
+
   // 并行加载数据和服务器配置
   const [, serverConfig] = await Promise.all([
     navStore.loadAllData(),
-    navStore.fetchServerConfig()  // 失败时返回 null，不会影响正常运行
-  ])
-  
+    navStore.fetchServerConfig(), // 失败时返回 null，不会影响正常运行
+  ]);
+
   // 尝试应用服务器配置（仅在没有本地配置时生效）
   // 如果服务器配置不可用，将使用内置默认配置
   if (serverConfig) {
-    configStore.applyServerConfig(serverConfig)
+    configStore.applyServerConfig(serverConfig);
   }
-  
+
   // 如果当前是自动或混合模式，调用接口重新识别网络类型
-  const mode = configStore.networkMode
-  if (mode === 'auto' || mode === 'hybrid') {
-    await navStore.fetchNetworkType()
+  const mode = configStore.networkMode;
+  if (mode === "auto" || mode === "hybrid") {
+    await navStore.fetchNetworkType();
   }
-  
+
   // 检查当前标签页是否有效，无效则切换到第一个可用标签页
-  ensureValidTab()
-})
+  ensureValidTab();
+});
 </script>
 
 <template>
   <!-- 素描风格 SVG 滤镜定义 -->
-  <svg width="0" height="0" style="position: absolute;">
+  <svg width="0" height="0" style="position: absolute">
     <defs>
       <!-- 素描滤镜 - 边缘抖动效果 -->
-      <filter id="sketch-filter" filterUnits="objectBoundingBox" x="-10%" y="-10%" width="120%" height="120%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
+      <filter
+        id="sketch-filter"
+        filterUnits="objectBoundingBox"
+        x="-10%"
+        y="-10%"
+        width="120%"
+        height="120%"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.04"
+          numOctaves="3"
+          result="noise"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="noise"
+          scale="2"
+          xChannelSelector="R"
+          yChannelSelector="G"
+        />
       </filter>
       <!-- 素描滤镜 - 悬停时轻微加强 -->
-      <filter id="sketch-filter-hover" filterUnits="objectBoundingBox" x="-10%" y="-10%" width="120%" height="120%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" result="noise" />
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G" />
+      <filter
+        id="sketch-filter-hover"
+        filterUnits="objectBoundingBox"
+        x="-10%"
+        y="-10%"
+        width="120%"
+        height="120%"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.03"
+          numOctaves="2"
+          result="noise"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="noise"
+          scale="1.5"
+          xChannelSelector="R"
+          yChannelSelector="G"
+        />
       </filter>
     </defs>
   </svg>
@@ -167,21 +209,21 @@ onMounted(async () => {
     <AppHeader v-if="showHeader" />
 
     <!-- 浮动设置按钮（仅在隐藏页头时显示） -->
-    <button 
-      v-if="!showHeader" 
+    <button
+      v-if="!showHeader"
       class="floating-settings-btn"
       @click="configStore.toggleSettingsPanel(true)"
     >
       <Settings class="floating-settings-icon" />
     </button>
 
-    <!-- 搜索栏（仅在站点页面显示） -->
-    <SearchBar v-if="configStore.showSearch && currentTab === 'sites'" />
-
     <!-- 主区域 -->
     <main class="main-content" :class="{ 'no-header': !showHeader }">
-      <!-- 内容标签页 -->
-      <ContentTabs class="mb-16" />
+      <!-- 顶部控制栏 (Tabs + Toolbar) -->
+      <div class="control-bar mb-6">
+        <ContentTabs class="flex-shrink-0" />
+        <AppToolbar class="flex-grow-1" />
+      </div>
 
       <!-- 站点网格 -->
       <SiteGrid v-if="currentTab === 'sites' && hasSites" />
@@ -190,7 +232,9 @@ onMounted(async () => {
       <DockerGrid v-else-if="currentTab === 'docker' && hasDocker" />
 
       <!-- Lucky 服务网格 -->
-      <ServiceGrid v-else-if="currentTab === 'luckyServices' && hasLuckyServices" />
+      <ServiceGrid
+        v-else-if="currentTab === 'luckyServices' && hasLuckyServices"
+      />
     </main>
 
     <!-- 设置面板 -->
@@ -228,16 +272,30 @@ onMounted(async () => {
   .main-content {
     padding: 0.75rem 1.5rem 2.5rem;
   }
-  
+
   .main-content.no-header {
     padding-top: 1.5rem;
   }
 }
 
-/* 移动端 ContentTabs 间距调整 */
-@media (max-width: 480px) {
-  .main-content .mb-16 {
-    margin-bottom: 0.75rem;
+/* 控制栏布局 */
+.control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+/* 移动端调整 */
+@media (max-width: 640px) {
+  .control-bar {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 

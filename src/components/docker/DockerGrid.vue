@@ -4,10 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/nav'
 import { useConfigStore } from '@/stores/config'
 import DockerCard from './DockerCard.vue'
-import SearchBox from '@/components/common/SearchBox.vue'
-import GroupDropdown from '@/components/common/GroupDropdown.vue'
-import DockerLayoutSwitcher from './DockerLayoutSwitcher.vue'
-import DockerOverview from './DockerOverview.vue'
+
 import type { DockerContainer, Group } from '@/types'
 
 const navStore = useNavStore()
@@ -237,25 +234,7 @@ onMounted(() => {
 
 <template>
   <div class="docker-section">
-    <!-- 分组筛选 -->
-    <div class="filter-bar">
-      <SearchBox
-        v-model="searchKeyword"
-        placeholder="搜索容器..."
-        color="docker"
-      />
-      <div class="filter-bar-right">
-        <GroupDropdown
-          :groups="groups"
-          :current="configStore.currentGroup"
-          color="docker"
-          @change="configStore.setCurrentGroup"
-          @toggle="configStore.toggleGroup"
-        />
-        <DockerOverview />
-        <DockerLayoutSwitcher />
-      </div>
-    </div>
+
 
     <!-- 全部模式或多选分组模式：按分组显示 -->
     <template v-if="configStore.isAllSelected || configStore.currentGroupArray.length > 1">

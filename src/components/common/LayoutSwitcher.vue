@@ -1,83 +1,89 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue'
-import { useConfigStore } from '@/stores/config'
-import type { LayoutMode } from '@/types'
+import { ref, onMounted, onUnmounted, computed, nextTick } from "vue";
+import { useConfigStore } from "@/stores/config";
+import type { LayoutMode } from "@/types";
 
-const configStore = useConfigStore()
+const configStore = useConfigStore();
 
-const isOpen = ref(false)
-const dropdownRef = ref<HTMLElement | null>(null)
-const dropdownMenuRef = ref<HTMLElement | null>(null)
-const alignRight = ref(false)
+const isOpen = ref(false);
+const dropdownRef = ref<HTMLElement | null>(null);
+const dropdownMenuRef = ref<HTMLElement | null>(null);
+const alignRight = ref(false);
 
 // 布局选项配置 - 四种布局
-const layoutOptions: { value: LayoutMode; label: string; icon: string; desc: string }[] = [
-  { value: 'normal', label: '卡片', icon: 'card', desc: '标准布局' },
-  { value: 'compact', label: '紧凑', icon: 'compact', desc: '显示更多' },
-  { value: 'list', label: '列表', icon: 'list', desc: '横向展示' },
-  { value: 'minimal', label: '极简', icon: 'minimal', desc: '图标导航' }
-]
+const layoutOptions: {
+  value: LayoutMode;
+  label: string;
+  icon: string;
+  desc: string;
+}[] = [
+  { value: "normal", label: "卡片", icon: "card", desc: "标准布局" },
+  { value: "compact", label: "紧凑", icon: "compact", desc: "显示更多" },
+  { value: "list", label: "列表", icon: "list", desc: "横向展示" },
+  { value: "minimal", label: "极简", icon: "minimal", desc: "图标导航" },
+];
 
 // 当前选中的布局
-const currentLayout = computed(() => configStore.layout)
+const currentLayout = computed(() => configStore.layout);
 
 // 获取当前布局的显示名称
 const displayLabel = computed(() => {
-  const option = layoutOptions.find(o => o.value === currentLayout.value)
-  return option?.label || '卡片'
-})
+  const option = layoutOptions.find((o) => o.value === currentLayout.value);
+  return option?.label || "卡片";
+});
 
 // 检测下拉菜单是否超出右边界
 function checkDropdownPosition() {
   nextTick(() => {
     if (dropdownMenuRef.value && dropdownRef.value) {
-      const dropdown = dropdownMenuRef.value
-      const wrapper = dropdownRef.value
-      const wrapperRect = wrapper.getBoundingClientRect()
-      const dropdownWidth = dropdown.offsetWidth
-      const viewportWidth = window.innerWidth
-      
+      const dropdown = dropdownMenuRef.value;
+      const wrapper = dropdownRef.value;
+      const wrapperRect = wrapper.getBoundingClientRect();
+      const dropdownWidth = dropdown.offsetWidth;
+      const viewportWidth = window.innerWidth;
+
       // 计算居中时下拉菜单右边界位置
-      const centerRight = wrapperRect.left + (wrapperRect.width / 2) + (dropdownWidth / 2)
-      
+      const centerRight =
+        wrapperRect.left + wrapperRect.width / 2 + dropdownWidth / 2;
+
       // 如果超出视口右边界，则右对齐
-      alignRight.value = centerRight > viewportWidth - 16
+      alignRight.value = centerRight > viewportWidth - 16;
     }
-  })
+  });
 }
 
 // 切换下拉菜单
 function toggleDropdown() {
-  isOpen.value = !isOpen.value
+  isOpen.value = !isOpen.value;
   if (isOpen.value) {
-    checkDropdownPosition()
+    checkDropdownPosition();
   }
 }
 
 // 选择布局
 function selectLayout(layout: LayoutMode) {
-  configStore.setLayout(layout)
-  isOpen.value = false
+  configStore.setLayout(layout);
+  isOpen.value = false;
 }
 
 // 点击外部关闭
 function handleClickOutside(event: MouseEvent) {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
-    isOpen.value = false
+    isOpen.value = false;
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
+  document.addEventListener("click", handleClickOutside);
+});
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <template>
-  <div 
+  <div
     ref="dropdownRef"
     class="layout-switcher-wrapper"
     :class="{ open: isOpen }"
@@ -87,9 +93,13 @@ onUnmounted(() => {
       <span class="badge-text">{{ displayLabel }}</span>
       <i class="fas fa-caret-down switch-icon"></i>
     </button>
-    
+
     <!-- 四宫格下拉菜单 -->
-    <div ref="dropdownMenuRef" class="layout-dropdown" :class="{ 'align-right': alignRight }">
+    <div
+      ref="dropdownMenuRef"
+      class="layout-dropdown"
+      :class="{ 'align-right': alignRight }"
+    >
       <div class="layout-grid">
         <button
           v-for="option in layoutOptions"
@@ -212,8 +222,9 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
-  border-radius: 20px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 10px;
   font-size: 13px;
   font-weight: 500;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -223,7 +234,7 @@ onUnmounted(() => {
   backdrop-filter: blur(12px) saturate(150%);
   -webkit-backdrop-filter: blur(12px) saturate(150%);
   color: rgba(6, 182, 212, 0.95);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 2px 8px -2px rgba(0, 0, 0, 0.15);
 }
@@ -231,7 +242,7 @@ onUnmounted(() => {
 .layout-badge:hover {
   background: rgba(0, 0, 0, 0.35);
   border-color: rgba(6, 182, 212, 0.35);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 2px 8px -2px rgba(0, 0, 0, 0.15),
     0 0 12px -4px rgba(6, 182, 212, 0.3);
@@ -262,7 +273,7 @@ onUnmounted(() => {
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 14px;
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   padding: 10px;
@@ -317,11 +328,15 @@ onUnmounted(() => {
 }
 
 .layout-option::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(135deg, transparent 0%, rgba(6, 182, 212, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(6, 182, 212, 0.1) 100%
+  );
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
@@ -337,16 +352,20 @@ onUnmounted(() => {
 }
 
 .layout-option.active {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.12) 0%,
+    rgba(139, 92, 246, 0.08) 100%
+  );
   border-color: rgba(6, 182, 212, 0.35);
   color: #06b6d4;
-  box-shadow: 
+  box-shadow:
     0 0 20px -5px rgba(6, 182, 212, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .layout-option.active::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 4px;
   right: 4px;
@@ -359,12 +378,20 @@ onUnmounted(() => {
 
 .layout-option.active .layout-preview {
   border-color: rgba(6, 182, 212, 0.5);
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.1) 0%,
+    rgba(139, 92, 246, 0.05) 100%
+  );
   box-shadow: 0 0 12px -3px rgba(6, 182, 212, 0.3);
 }
 
 .layout-option.active .layout-preview::before {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.1) 0%,
+    transparent 50%
+  );
 }
 
 /* 布局预览框 */
@@ -373,7 +400,11 @@ onUnmounted(() => {
   height: 40px;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.15) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.25) 0%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -384,10 +415,14 @@ onUnmounted(() => {
 }
 
 .layout-preview::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 50%
+  );
   pointer-events: none;
 }
 
@@ -409,7 +444,11 @@ onUnmounted(() => {
   width: 14px;
   height: 14px;
   border-radius: 4px;
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.7) 0%, rgba(139, 92, 246, 0.5) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.7) 0%,
+    rgba(139, 92, 246, 0.5) 100%
+  );
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -490,7 +529,11 @@ onUnmounted(() => {
   width: 8px;
   height: 8px;
   border-radius: 2px;
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.6) 0%, rgba(139, 92, 246, 0.4) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.6) 0%,
+    rgba(139, 92, 246, 0.4) 100%
+  );
   flex-shrink: 0;
 }
 
@@ -535,7 +578,11 @@ onUnmounted(() => {
   width: 6px;
   height: 6px;
   border-radius: 2px;
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.6) 0%, rgba(139, 92, 246, 0.4) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.6) 0%,
+    rgba(139, 92, 246, 0.4) 100%
+  );
   flex-shrink: 0;
 }
 
@@ -576,7 +623,11 @@ onUnmounted(() => {
   width: 9px;
   height: 9px;
   border-radius: 3px;
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.5) 0%, rgba(139, 92, 246, 0.3) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.5) 0%,
+    rgba(139, 92, 246, 0.3) 100%
+  );
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
@@ -599,7 +650,7 @@ onUnmounted(() => {
 [data-theme="light"] .layout-badge {
   background: rgba(255, 255, 255, 0.6);
   border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.8),
     0 2px 8px -2px rgba(0, 0, 0, 0.08);
 }
@@ -612,7 +663,7 @@ onUnmounted(() => {
 [data-theme="light"] .layout-dropdown {
   background: rgba(255, 255, 255, 0.92);
   border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
@@ -622,7 +673,11 @@ onUnmounted(() => {
 }
 
 [data-theme="light"] .layout-option::before {
-  background: linear-gradient(135deg, transparent 0%, rgba(6, 182, 212, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(6, 182, 212, 0.08) 100%
+  );
 }
 
 [data-theme="light"] .layout-option:hover {
@@ -631,26 +686,42 @@ onUnmounted(() => {
 }
 
 [data-theme="light"] .layout-option.active {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(139, 92, 246, 0.06) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.1) 0%,
+    rgba(139, 92, 246, 0.06) 100%
+  );
   border-color: rgba(6, 182, 212, 0.4);
-  box-shadow: 
+  box-shadow:
     0 0 20px -5px rgba(6, 182, 212, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 [data-theme="light"] .layout-option.active .layout-preview {
   border-color: rgba(6, 182, 212, 0.5);
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(139, 92, 246, 0.04) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.08) 0%,
+    rgba(139, 92, 246, 0.04) 100%
+  );
   box-shadow: 0 0 12px -3px rgba(6, 182, 212, 0.25);
 }
 
 [data-theme="light"] .layout-preview {
   border-color: rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.02) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.04) 0%,
+    rgba(0, 0, 0, 0.02) 100%
+  );
 }
 
 [data-theme="light"] .layout-preview::before {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 50%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    transparent 50%
+  );
 }
 
 [data-theme="light"] .card-title-bar {
@@ -682,14 +753,18 @@ onUnmounted(() => {
 }
 
 [data-theme="light"] .minimal-icon {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.6) 0%, rgba(139, 92, 246, 0.4) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.6) 0%,
+    rgba(139, 92, 246, 0.4) 100%
+  );
 }
 
 /* ============ 素描浅色主题适配 ============ */
 [data-theme="sketch-light"] .layout-badge {
   background: rgba(255, 255, 255, 0.5);
   border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.6),
     0 2px 8px -2px rgba(0, 0, 0, 0.1);
 }
@@ -702,7 +777,7 @@ onUnmounted(() => {
 [data-theme="sketch-light"] .layout-dropdown {
   background: rgba(255, 255, 255, 0.92);
   border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
@@ -712,7 +787,11 @@ onUnmounted(() => {
 }
 
 [data-theme="sketch-light"] .layout-option::before {
-  background: linear-gradient(135deg, transparent 0%, rgba(60, 50, 40, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(60, 50, 40, 0.05) 100%
+  );
 }
 
 [data-theme="sketch-light"] .layout-option:hover {
@@ -721,10 +800,14 @@ onUnmounted(() => {
 }
 
 [data-theme="sketch-light"] .layout-option.active {
-  background: linear-gradient(135deg, rgba(60, 50, 40, 0.08) 0%, rgba(80, 70, 60, 0.04) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(60, 50, 40, 0.08) 0%,
+    rgba(80, 70, 60, 0.04) 100%
+  );
   border-color: rgba(60, 50, 40, 0.25);
   color: rgba(60, 50, 40, 1);
-  box-shadow: 
+  box-shadow:
     0 0 15px -5px rgba(60, 50, 40, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
@@ -736,21 +819,37 @@ onUnmounted(() => {
 
 [data-theme="sketch-light"] .layout-option.active .layout-preview {
   border-color: rgba(60, 50, 40, 0.3);
-  background: linear-gradient(135deg, rgba(60, 50, 40, 0.06) 0%, rgba(80, 70, 60, 0.03) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(60, 50, 40, 0.06) 0%,
+    rgba(80, 70, 60, 0.03) 100%
+  );
   box-shadow: 0 0 10px -3px rgba(60, 50, 40, 0.2);
 }
 
 [data-theme="sketch-light"] .layout-preview {
   border-color: rgba(0, 0, 0, 0.12);
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.05) 0%,
+    rgba(0, 0, 0, 0.02) 100%
+  );
 }
 
 [data-theme="sketch-light"] .layout-preview::before {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 50%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    transparent 50%
+  );
 }
 
 [data-theme="sketch-light"] .preview-card-icon {
-  background: linear-gradient(135deg, rgba(60, 50, 40, 0.5) 0%, rgba(80, 70, 60, 0.3) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(60, 50, 40, 0.5) 0%,
+    rgba(80, 70, 60, 0.3) 100%
+  );
   box-shadow: 0 2px 4px rgba(60, 50, 40, 0.2);
 }
 
@@ -776,7 +875,11 @@ onUnmounted(() => {
 }
 
 [data-theme="sketch-light"] .compact-icon {
-  background: linear-gradient(135deg, rgba(60, 50, 40, 0.4) 0%, rgba(80, 70, 60, 0.2) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(60, 50, 40, 0.4) 0%,
+    rgba(80, 70, 60, 0.2) 100%
+  );
 }
 
 [data-theme="sketch-light"] .compact-line {
@@ -788,7 +891,11 @@ onUnmounted(() => {
 }
 
 [data-theme="sketch-light"] .list-icon {
-  background: linear-gradient(135deg, rgba(60, 50, 40, 0.4) 0%, rgba(80, 70, 60, 0.2) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(60, 50, 40, 0.4) 0%,
+    rgba(80, 70, 60, 0.2) 100%
+  );
 }
 
 [data-theme="sketch-light"] .list-text {
@@ -800,7 +907,11 @@ onUnmounted(() => {
 }
 
 [data-theme="sketch-light"] .minimal-icon {
-  background: linear-gradient(135deg, rgba(60, 50, 40, 0.35) 0%, rgba(80, 70, 60, 0.2) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(60, 50, 40, 0.35) 0%,
+    rgba(80, 70, 60, 0.2) 100%
+  );
   box-shadow: 0 1px 3px rgba(60, 50, 40, 0.15);
 }
 
@@ -813,7 +924,7 @@ onUnmounted(() => {
 [data-theme="sketch-dark"] .layout-dropdown {
   background: rgba(35, 30, 25, 0.95);
   border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
@@ -823,7 +934,11 @@ onUnmounted(() => {
 }
 
 [data-theme="sketch-dark"] .layout-option::before {
-  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.03) 100%);
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
 }
 
 [data-theme="sketch-dark"] .layout-option:hover {
@@ -832,10 +947,14 @@ onUnmounted(() => {
 }
 
 [data-theme="sketch-dark"] .layout-option.active {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
   border-color: rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 0.95);
-  box-shadow: 
+  box-shadow:
     0 0 15px -5px rgba(255, 255, 255, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
@@ -847,21 +966,37 @@ onUnmounted(() => {
 
 [data-theme="sketch-dark"] .layout-option.active .layout-preview {
   border-color: rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
   box-shadow: 0 0 10px -3px rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="sketch-dark"] .layout-preview {
   border-color: rgba(255, 255, 255, 0.1);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
 }
 
 [data-theme="sketch-dark"] .layout-preview::before {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    transparent 50%
+  );
 }
 
 [data-theme="sketch-dark"] .preview-card-icon {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -887,7 +1022,11 @@ onUnmounted(() => {
 }
 
 [data-theme="sketch-dark"] .compact-icon {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
 }
 
 [data-theme="sketch-dark"] .compact-line {
@@ -899,7 +1038,11 @@ onUnmounted(() => {
 }
 
 [data-theme="sketch-dark"] .list-icon {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
 }
 
 [data-theme="sketch-dark"] .list-text {
@@ -911,7 +1054,11 @@ onUnmounted(() => {
 }
 
 [data-theme="sketch-dark"] .minimal-icon {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
@@ -922,7 +1069,7 @@ onUnmounted(() => {
 
 /* 深色主题适配 */
 [data-theme="dark"] .layout-dropdown {
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
@@ -933,19 +1080,19 @@ onUnmounted(() => {
     padding: 5px 10px;
     font-size: 12px;
   }
-  
+
   .badge-text {
     max-width: 48px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  
+
   .layout-option {
     width: 64px;
     padding: 8px 6px;
   }
-  
+
   .layout-preview {
     width: 42px;
     height: 32px;

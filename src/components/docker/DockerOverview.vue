@@ -1,157 +1,163 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import { useNavStore } from '@/stores/nav'
-import type { DockerContainer } from '@/types'
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { useNavStore } from "@/stores/nav";
+import type { DockerContainer } from "@/types";
 
-const navStore = useNavStore()
+const navStore = useNavStore();
 
-const isOpen = ref(false)
-const dropdownRef = ref<HTMLElement | null>(null)
+const isOpen = ref(false);
+const dropdownRef = ref<HTMLElement | null>(null);
 
 // 解析 CPU 百分比字符串为数字
 function parseCpuPercent(cpuStr: string): number {
-  if (!cpuStr) return 0
-  const match = cpuStr.match(/[\d.]+/)
-  return match ? parseFloat(match[0]) : 0
+  if (!cpuStr) return 0;
+  const match = cpuStr.match(/[\d.]+/);
+  return match ? parseFloat(match[0]) : 0;
 }
 
 // 解析内存使用字符串为字节数（用于排序）
 function parseMemoryUsage(memStr: string): number {
-  if (!memStr) return 0
-  const match = memStr.match(/([\d.]+)\s*([KMGT]?B)?/i)
-  if (!match) return 0
-  
-  const value = parseFloat(match[1])
-  const unit = (match[2] || 'B').toUpperCase()
-  
+  if (!memStr) return 0;
+  const match = memStr.match(/([\d.]+)\s*([KMGT]?B)?/i);
+  if (!match) return 0;
+
+  const value = parseFloat(match[1]);
+  const unit = (match[2] || "B").toUpperCase();
+
   const multipliers: Record<string, number> = {
-    'B': 1,
-    'KB': 1024,
-    'MB': 1024 * 1024,
-    'GB': 1024 * 1024 * 1024,
-    'TB': 1024 * 1024 * 1024 * 1024
-  }
-  
-  return value * (multipliers[unit] || 1)
+    B: 1,
+    KB: 1024,
+    MB: 1024 * 1024,
+    GB: 1024 * 1024 * 1024,
+    TB: 1024 * 1024 * 1024 * 1024,
+  };
+
+  return value * (multipliers[unit] || 1);
 }
 
 // 格式化内存显示
 function formatMemory(memStr: string): string {
-  if (!memStr) return '-'
-  return memStr.replace(/\s+/g, '')
+  if (!memStr) return "-";
+  return memStr.replace(/\s+/g, "");
 }
 
 // CPU 占用前5的容器
 const topCpuContainers = computed(() => {
-  const stats = Array.from(navStore.dockerStats.values())
-  const containers = navStore.allContainers
-  
+  const stats = Array.from(navStore.dockerStats.values());
+  const containers = navStore.allContainers;
+
   // 只统计运行中的容器
-  const runningStats = stats.filter(stat => {
-    const container = containers.find((c: DockerContainer) => c.containerName === stat.containerName)
-    return container && stat.state === 'running'
-  })
-  
+  const runningStats = stats.filter((stat) => {
+    const container = containers.find(
+      (c: DockerContainer) => c.containerName === stat.containerName,
+    );
+    return container && stat.state === "running";
+  });
+
   return runningStats
-    .map(stat => ({
+    .map((stat) => ({
       ...stat,
       cpuValue: parseCpuPercent(stat.cpuPercent),
-      container: containers.find((c: DockerContainer) => c.containerName === stat.containerName)
+      container: containers.find(
+        (c: DockerContainer) => c.containerName === stat.containerName,
+      ),
     }))
     .sort((a, b) => b.cpuValue - a.cpuValue)
-    .slice(0, 5)
-})
+    .slice(0, 5);
+});
 
 // 内存占用前5的容器
 const topMemoryContainers = computed(() => {
-  const stats = Array.from(navStore.dockerStats.values())
-  const containers = navStore.allContainers
-  
+  const stats = Array.from(navStore.dockerStats.values());
+  const containers = navStore.allContainers;
+
   // 只统计运行中的容器
-  const runningStats = stats.filter(stat => {
-    const container = containers.find((c: DockerContainer) => c.containerName === stat.containerName)
-    return container && stat.state === 'running'
-  })
-  
+  const runningStats = stats.filter((stat) => {
+    const container = containers.find(
+      (c: DockerContainer) => c.containerName === stat.containerName,
+    );
+    return container && stat.state === "running";
+  });
+
   return runningStats
-    .map(stat => ({
+    .map((stat) => ({
       ...stat,
       memoryValue: parseMemoryUsage(stat.memoryUsage),
-      container: containers.find((c: DockerContainer) => c.containerName === stat.containerName)
+      container: containers.find(
+        (c: DockerContainer) => c.containerName === stat.containerName,
+      ),
     }))
     .sort((a, b) => b.memoryValue - a.memoryValue)
-    .slice(0, 5)
-})
+    .slice(0, 5);
+});
 
 // 是否有数据
 const hasData = computed(() => {
-  return topCpuContainers.value.length > 0 || topMemoryContainers.value.length > 0
-})
+  return (
+    topCpuContainers.value.length > 0 || topMemoryContainers.value.length > 0
+  );
+});
 
 // 切换面板
 function togglePanel() {
-  isOpen.value = !isOpen.value
+  isOpen.value = !isOpen.value;
 }
 
 // 点击外部关闭
 function handleClickOutside(event: MouseEvent) {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
-    isOpen.value = false
+    isOpen.value = false;
   }
 }
 
 // 打开时启动轮询
 watch(isOpen, (newVal) => {
   if (newVal) {
-    navStore.startDockerStatsPolling()
+    navStore.startDockerStatsPolling();
   }
-})
+});
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
+  document.addEventListener("click", handleClickOutside);
+});
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+  document.removeEventListener("click", handleClickOutside);
+});
 
 // 获取排名颜色
 function getRankColor(index: number): string {
   const colors = [
-    'var(--rank-gold)',
-    'var(--rank-silver)', 
-    'var(--rank-bronze)',
-    'var(--rank-default)',
-    'var(--rank-default)'
-  ]
-  return colors[index] || colors[4]
+    "var(--rank-gold)",
+    "var(--rank-silver)",
+    "var(--rank-bronze)",
+    "var(--rank-default)",
+    "var(--rank-default)",
+  ];
+  return colors[index] || colors[4];
 }
 
 // 获取进度条宽度（根据排名第一的值计算百分比）
 function getCpuBarWidth(value: number): string {
-  const max = topCpuContainers.value[0]?.cpuValue || 1
-  return `${Math.min((value / max) * 100, 100)}%`
+  const max = topCpuContainers.value[0]?.cpuValue || 1;
+  return `${Math.min((value / max) * 100, 100)}%`;
 }
 
 function getMemoryBarWidth(value: number): string {
-  const max = topMemoryContainers.value[0]?.memoryValue || 1
-  return `${Math.min((value / max) * 100, 100)}%`
+  const max = topMemoryContainers.value[0]?.memoryValue || 1;
+  return `${Math.min((value / max) * 100, 100)}%`;
 }
 </script>
 
 <template>
-  <div 
-    ref="dropdownRef"
-    class="overview-wrapper"
-    :class="{ open: isOpen }"
-  >
+  <div ref="dropdownRef" class="overview-wrapper" :class="{ open: isOpen }">
     <!-- 总览按钮 -->
     <button class="overview-badge" @click="togglePanel" title="资源总览">
       <i class="fas fa-chart-bar badge-icon"></i>
       <span class="badge-text">总览</span>
       <i class="fas fa-caret-down switch-icon"></i>
     </button>
-    
+
     <!-- 总览面板 -->
     <div class="overview-panel">
       <!-- 面板头部 -->
@@ -161,13 +167,13 @@ function getMemoryBarWidth(value: number): string {
         <span class="header-title">资源监控</span>
         <span class="header-badge">TOP 5</span>
       </div>
-      
+
       <!-- 无数据状态 -->
       <div v-if="!hasData" class="empty-state">
         <i class="fas fa-inbox empty-icon"></i>
         <span>暂无运行中的容器</span>
       </div>
-      
+
       <!-- 排行榜内容 -->
       <div v-else class="panel-content">
         <!-- CPU 排行榜 -->
@@ -179,20 +185,25 @@ function getMemoryBarWidth(value: number): string {
             <span class="section-title">CPU 占用</span>
           </div>
           <div class="rank-list">
-            <div 
-              v-for="(item, index) in topCpuContainers" 
+            <div
+              v-for="(item, index) in topCpuContainers"
               :key="item.containerName"
               class="rank-item"
               :class="`rank-${index + 1}`"
             >
-              <div class="rank-number" :style="{ '--rank-color': getRankColor(index) }">
+              <div
+                class="rank-number"
+                :style="{ '--rank-color': getRankColor(index) }"
+              >
                 {{ index + 1 }}
               </div>
               <div class="rank-info">
-                <div class="rank-name">{{ item.container?.displayName || item.containerName }}</div>
+                <div class="rank-name">
+                  {{ item.container?.displayName || item.containerName }}
+                </div>
                 <div class="rank-bar-wrapper">
-                  <div 
-                    class="rank-bar cpu-bar" 
+                  <div
+                    class="rank-bar cpu-bar"
                     :style="{ width: getCpuBarWidth(item.cpuValue) }"
                   ></div>
                 </div>
@@ -204,13 +215,13 @@ function getMemoryBarWidth(value: number): string {
             </div>
           </div>
         </div>
-        
+
         <!-- 分隔线 -->
         <div class="section-divider">
           <div class="divider-line"></div>
           <div class="divider-glow"></div>
         </div>
-        
+
         <!-- 内存排行榜 -->
         <div class="rank-section">
           <div class="section-header">
@@ -220,20 +231,25 @@ function getMemoryBarWidth(value: number): string {
             <span class="section-title">内存占用</span>
           </div>
           <div class="rank-list">
-            <div 
-              v-for="(item, index) in topMemoryContainers" 
+            <div
+              v-for="(item, index) in topMemoryContainers"
               :key="item.containerName"
               class="rank-item"
               :class="`rank-${index + 1}`"
             >
-              <div class="rank-number" :style="{ '--rank-color': getRankColor(index) }">
+              <div
+                class="rank-number"
+                :style="{ '--rank-color': getRankColor(index) }"
+              >
                 {{ index + 1 }}
               </div>
               <div class="rank-info">
-                <div class="rank-name">{{ item.container?.displayName || item.containerName }}</div>
+                <div class="rank-name">
+                  {{ item.container?.displayName || item.containerName }}
+                </div>
                 <div class="rank-bar-wrapper">
-                  <div 
-                    class="rank-bar memory-bar" 
+                  <div
+                    class="rank-bar memory-bar"
                     :style="{ width: getMemoryBarWidth(item.memoryValue) }"
                   ></div>
                 </div>
@@ -246,13 +262,11 @@ function getMemoryBarWidth(value: number): string {
           </div>
         </div>
       </div>
-      
+
       <!-- 面板底部装饰 -->
       <div class="panel-footer">
         <div class="footer-line"></div>
-        <div class="footer-dots">
-          <span></span><span></span><span></span>
-        </div>
+        <div class="footer-dots"><span></span><span></span><span></span></div>
       </div>
     </div>
   </div>
@@ -275,8 +289,9 @@ function getMemoryBarWidth(value: number): string {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
-  border-radius: 20px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 10px;
   font-size: 13px;
   font-weight: 500;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -287,7 +302,7 @@ function getMemoryBarWidth(value: number): string {
   -webkit-backdrop-filter: blur(12px) saturate(150%);
   position: relative;
   overflow: hidden;
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 2px 8px -2px rgba(0, 0, 0, 0.15);
 }
@@ -295,7 +310,7 @@ function getMemoryBarWidth(value: number): string {
 .overview-badge:hover {
   background: rgba(0, 0, 0, 0.35);
   border-color: rgba(6, 182, 212, 0.35);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 2px 8px -2px rgba(0, 0, 0, 0.15),
     0 0 12px -4px rgba(6, 182, 212, 0.3);
@@ -333,7 +348,7 @@ function getMemoryBarWidth(value: number): string {
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
-  box-shadow: 
+  box-shadow:
     0 10px 40px rgba(0, 0, 0, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
@@ -358,7 +373,11 @@ function getMemoryBarWidth(value: number): string {
   align-items: center;
   gap: 10px;
   padding: 14px 16px;
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(168, 85, 247, 0.12) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.12) 0%,
+    rgba(168, 85, 247, 0.12) 100%
+  );
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   position: relative;
   overflow: hidden;
@@ -370,7 +389,11 @@ function getMemoryBarWidth(value: number): string {
   left: 10%;
   width: 80%;
   height: 100%;
-  background: radial-gradient(ellipse, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+  background: radial-gradient(
+    ellipse,
+    rgba(6, 182, 212, 0.2) 0%,
+    transparent 70%
+  );
   pointer-events: none;
 }
 
@@ -398,7 +421,11 @@ function getMemoryBarWidth(value: number): string {
   border-radius: 10px;
   font-size: 11px;
   font-weight: 600;
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.2) 0%,
+    rgba(168, 85, 247, 0.2) 100%
+  );
   color: #06b6d4;
   border: 1px solid rgba(6, 182, 212, 0.3);
   position: relative;
@@ -475,12 +502,20 @@ function getMemoryBarWidth(value: number): string {
 
 /* 排名第一特殊样式 */
 .rank-item.rank-1 {
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.08) 0%, rgba(251, 191, 36, 0.03) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.08) 0%,
+    rgba(251, 191, 36, 0.03) 100%
+  );
   border-color: rgba(251, 191, 36, 0.15);
 }
 
 .rank-item.rank-1:hover {
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.12) 0%, rgba(251, 191, 36, 0.06) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.12) 0%,
+    rgba(251, 191, 36, 0.06) 100%
+  );
 }
 
 /* 排名数字 */
@@ -501,7 +536,11 @@ function getMemoryBarWidth(value: number): string {
 }
 
 .rank-1 .rank-number {
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(251, 191, 36, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.2) 0%,
+    rgba(251, 191, 36, 0.1) 100%
+  );
   box-shadow: 0 0 10px -2px rgba(251, 191, 36, 0.4);
 }
 
@@ -552,7 +591,7 @@ function getMemoryBarWidth(value: number): string {
   font-size: 12px;
   font-weight: 600;
   color: hsl(var(--text-secondary));
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-family: "SF Mono", "Monaco", "Inconsolata", monospace;
   min-width: 56px;
   text-align: right;
 }
@@ -570,14 +609,24 @@ function getMemoryBarWidth(value: number): string {
 .divider-line {
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 100%
+  );
 }
 
 .divider-glow {
   position: absolute;
   width: 60px;
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(168, 85, 247, 0.3) 50%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(168, 85, 247, 0.3) 50%,
+    transparent 100%
+  );
 }
 
 /* 面板底部 */
@@ -593,7 +642,13 @@ function getMemoryBarWidth(value: number): string {
   width: 60%;
   height: 2px;
   border-radius: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(6, 182, 212, 0.3) 30%, rgba(168, 85, 247, 0.3) 70%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(6, 182, 212, 0.3) 30%,
+    rgba(168, 85, 247, 0.3) 70%,
+    transparent 100%
+  );
 }
 
 .footer-dots {
@@ -644,7 +699,7 @@ function getMemoryBarWidth(value: number): string {
 [data-theme="light"] .overview-badge {
   background: rgba(255, 255, 255, 0.6);
   border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.8),
     0 2px 8px -2px rgba(0, 0, 0, 0.08);
 }
@@ -657,13 +712,17 @@ function getMemoryBarWidth(value: number): string {
 [data-theme="light"] .overview-panel {
   background: rgba(255, 255, 255, 0.92);
   border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 
+  box-shadow:
     0 10px 40px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 [data-theme="light"] .panel-header {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.08) 0%,
+    rgba(168, 85, 247, 0.08) 100%
+  );
   border-bottom-color: rgba(0, 0, 0, 0.05);
 }
 
@@ -685,7 +744,11 @@ function getMemoryBarWidth(value: number): string {
 }
 
 [data-theme="light"] .rank-item.rank-1 {
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.06) 0%, rgba(251, 191, 36, 0.02) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.06) 0%,
+    rgba(251, 191, 36, 0.02) 100%
+  );
   border-color: rgba(251, 191, 36, 0.12);
 }
 
@@ -716,7 +779,7 @@ function getMemoryBarWidth(value: number): string {
 
 /* 深色主题 */
 [data-theme="dark"] .overview-panel {
-  box-shadow: 
+  box-shadow:
     0 12px 48px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -728,14 +791,14 @@ function getMemoryBarWidth(value: number): string {
     padding: 5px 10px;
     font-size: 12px;
   }
-  
+
   .badge-text {
     max-width: 40px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  
+
   .overview-panel {
     position: fixed;
     top: auto;
@@ -748,38 +811,38 @@ function getMemoryBarWidth(value: number): string {
     transform: translateY(100%);
     overflow-y: auto;
   }
-  
+
   .overview-wrapper.open .overview-panel {
     transform: translateY(0);
   }
-  
+
   .panel-content {
     padding: 12px 16px 20px;
   }
-  
+
   .rank-item {
     padding: 10px 12px;
   }
-  
+
   .rank-name {
     font-size: 13px;
   }
-  
+
   .rank-value {
     font-size: 13px;
     min-width: 60px;
   }
-  
+
   .section-icon {
     width: 28px;
     height: 28px;
     font-size: 13px;
   }
-  
+
   .section-title {
     font-size: 14px;
   }
-  
+
   /* 移动端底部安全区 */
   .panel-footer {
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0));
@@ -792,7 +855,7 @@ function getMemoryBarWidth(value: number): string {
     min-width: 52px;
     font-size: 11px;
   }
-  
+
   .rank-number {
     width: 20px;
     height: 20px;

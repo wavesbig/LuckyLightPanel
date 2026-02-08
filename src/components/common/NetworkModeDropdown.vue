@@ -1,82 +1,86 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { useConfigStore } from '@/stores/config'
-import { useNavStore } from '@/stores/nav'
-import type { NetworkMode } from '@/types'
+import { ref, onMounted, onUnmounted, computed } from "vue";
+import { useConfigStore } from "@/stores/config";
+import { useNavStore } from "@/stores/nav";
+import type { NetworkMode } from "@/types";
 
-const configStore = useConfigStore()
-const navStore = useNavStore()
+const configStore = useConfigStore();
+const navStore = useNavStore();
 
-const isOpen = ref(false)
-const dropdownRef = ref<HTMLElement | null>(null)
+const isOpen = ref(false);
+const dropdownRef = ref<HTMLElement | null>(null);
 
 // 网络模式选项
-const networkModeOptions: { value: NetworkMode; label: string; icon: string }[] = [
-  { value: 'auto', label: '自动', icon: 'fas fa-magic' },
-  { value: 'internal', label: '内网', icon: 'fas fa-home' },
-  { value: 'external', label: '外网', icon: 'fas fa-globe' },
-  { value: 'hybrid', label: '混合', icon: 'fas fa-random' }
-]
+const networkModeOptions: {
+  value: NetworkMode;
+  label: string;
+  icon: string;
+}[] = [
+  { value: "auto", label: "自动", icon: "fas fa-magic" },
+  { value: "internal", label: "内网", icon: "fas fa-home" },
+  { value: "external", label: "外网", icon: "fas fa-globe" },
+  { value: "hybrid", label: "混合", icon: "fas fa-random" },
+];
 
 // 获取当前显示的文本（自动模式显示识别结果）
 const displayLabel = computed(() => {
-  const mode = configStore.networkMode
-  if (mode === 'auto') {
+  const mode = configStore.networkMode;
+  if (mode === "auto") {
     // 自动模式：查询失败时显示"自动(混合)"，否则显示识别结果
     if (navStore.networkTypeFetchFailed) {
-      return '自动(混合)'
+      return "自动(混合)";
     }
-    const isInternal = navStore.networkType === 'internal'
-    return isInternal ? '自动(内网)' : '自动(外网)'
+    const isInternal = navStore.networkType === "internal";
+    return isInternal ? "自动(内网)" : "自动(外网)";
   }
-  const option = networkModeOptions.find(o => o.value === mode)
-  return option?.label || '混合'
-})
+  const option = networkModeOptions.find((o) => o.value === mode);
+  return option?.label || "混合";
+});
 
 // 获取当前显示的图标
 const displayIcon = computed(() => {
-  const mode = configStore.networkMode
-  if (mode === 'auto') {
-    return 'fas fa-magic'
+  const mode = configStore.networkMode;
+  if (mode === "auto") {
+    return "fas fa-magic";
   }
-  const option = networkModeOptions.find(o => o.value === mode)
-  return option?.icon || 'fas fa-random'
-})
+  const option = networkModeOptions.find((o) => o.value === mode);
+  return option?.icon || "fas fa-random";
+});
 
 // 切换下拉菜单
 function toggleDropdown() {
-  isOpen.value = !isOpen.value
+  isOpen.value = !isOpen.value;
 }
 
 // 选择模式
 async function selectMode(mode: NetworkMode) {
-  configStore.setNetworkMode(mode)
-  isOpen.value = false
-  
+  configStore.setNetworkMode(mode);
+  isOpen.value = false;
+
   // 切换到自动或混合模式时，重新获取网络类型
-  if (mode === 'auto' || mode === 'hybrid') {
-    await navStore.fetchNetworkType()
+  if (mode === "auto" || mode === "hybrid") {
+    await navStore.fetchNetworkType();
   }
 }
 
 // 点击外部关闭
 function handleClickOutside(event: MouseEvent) {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
-    isOpen.value = false
+    isOpen.value = false;
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
+  document.addEventListener("click", handleClickOutside);
+});
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <template>
-  <div 
+  <div
     ref="dropdownRef"
     class="network-dropdown-wrapper"
     :class="{ open: isOpen }"
@@ -86,7 +90,7 @@ onUnmounted(() => {
       <span class="badge-text">{{ displayLabel }}</span>
       <i class="fas fa-caret-down switch-icon"></i>
     </button>
-    
+
     <div class="network-dropdown">
       <button
         v-for="option in networkModeOptions"
@@ -112,8 +116,9 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
-  border-radius: 20px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 10px;
   font-size: 13px;
   font-weight: 500;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -123,7 +128,7 @@ onUnmounted(() => {
   backdrop-filter: blur(12px) saturate(150%);
   -webkit-backdrop-filter: blur(12px) saturate(150%);
   color: rgba(168, 85, 247, 0.95);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 2px 8px -2px rgba(0, 0, 0, 0.15);
 }
@@ -131,7 +136,7 @@ onUnmounted(() => {
 .network-badge:hover {
   background: rgba(0, 0, 0, 0.35);
   border-color: rgba(168, 85, 247, 0.35);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 2px 8px -2px rgba(0, 0, 0, 0.15),
     0 0 12px -4px rgba(168, 85, 247, 0.3);
@@ -164,7 +169,7 @@ onUnmounted(() => {
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   padding: 6px;
@@ -219,7 +224,7 @@ onUnmounted(() => {
 [data-theme="light"] .network-badge {
   background: rgba(255, 255, 255, 0.6);
   border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.8),
     0 2px 8px -2px rgba(0, 0, 0, 0.08);
 }
@@ -232,7 +237,7 @@ onUnmounted(() => {
 [data-theme="light"] .network-dropdown {
   background: rgba(255, 255, 255, 0.92);
   border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
@@ -249,7 +254,7 @@ onUnmounted(() => {
 [data-theme="sketch-light"] .network-badge {
   background: rgba(255, 255, 255, 0.5);
   border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 
+  box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.6),
     0 2px 8px -2px rgba(0, 0, 0, 0.1);
 }
@@ -262,7 +267,7 @@ onUnmounted(() => {
 [data-theme="sketch-light"] .network-dropdown {
   background: rgba(255, 255, 255, 0.92);
   border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
@@ -279,14 +284,14 @@ onUnmounted(() => {
 [data-theme="sketch-dark"] .network-dropdown {
   background: rgba(35, 30, 25, 0.95);
   border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 /* 深色主题适配 */
 [data-theme="dark"] .network-dropdown {
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
@@ -297,7 +302,7 @@ onUnmounted(() => {
     padding: 5px 10px;
     font-size: 12px;
   }
-  
+
   .badge-text {
     max-width: 80px;
     overflow: hidden;

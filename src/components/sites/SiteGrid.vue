@@ -4,10 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/nav'
 import { useConfigStore } from '@/stores/config'
 import SiteCard from './SiteCard.vue'
-import SearchBox from '@/components/common/SearchBox.vue'
-import GroupDropdown from '@/components/common/GroupDropdown.vue'
-import NetworkModeDropdown from '@/components/common/NetworkModeDropdown.vue'
-import LayoutSwitcher from '@/components/common/LayoutSwitcher.vue'
+
 import type { Site, Group } from '@/types'
 
 const navStore = useNavStore()
@@ -134,25 +131,7 @@ const gridClass = computed(() => {
 
 <template>
   <div class="site-section">
-    <!-- 分组筛选 -->
-    <div class="filter-bar">
-      <SearchBox
-        v-model="searchKeyword"
-        placeholder="搜索站点..."
-        color="cyan"
-      />
-      <div class="filter-bar-right">
-        <GroupDropdown
-          :groups="groups"
-          :current="configStore.currentGroup"
-          color="cyan"
-          @change="configStore.setCurrentGroup"
-          @toggle="configStore.toggleGroup"
-        />
-        <NetworkModeDropdown />
-        <LayoutSwitcher />
-      </div>
-    </div>
+
 
     <!-- 全部模式或多选分组模式：按分组显示 -->
     <template v-if="configStore.isAllSelected || configStore.currentGroupArray.length > 1">

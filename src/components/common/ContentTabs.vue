@@ -1,52 +1,56 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
-import { useConfigStore } from '@/stores/config'
-import { useNavStore } from '@/stores/nav'
-import { Globe, Container, Server } from 'lucide-vue-next'
-import type { TabType } from '@/types'
+import { computed, watch } from "vue";
+import { useConfigStore } from "@/stores/config";
+import { useNavStore } from "@/stores/nav";
+import { Globe, Container, Server } from "lucide-vue-next";
+import type { TabType } from "@/types";
 
-const configStore = useConfigStore()
-const navStore = useNavStore()
+const configStore = useConfigStore();
+const navStore = useNavStore();
 
 // 可用的标签页（启用且有数据才显示）
 const availableTabs = computed(() => {
-  const tabs: { key: TabType; label: string; icon: typeof Globe }[] = []
-  
+  const tabs: { key: TabType; label: string; icon: typeof Globe }[] = [];
+
   // 站点：启用且有数据
   if (navStore.sitesEnabled && navStore.allSites.length > 0) {
-    tabs.push({ key: 'sites', label: '站点', icon: Globe })
+    tabs.push({ key: "sites", label: "站点", icon: Globe });
   }
   // Docker：启用且有数据
   if (navStore.dockerEnabled && navStore.allContainers.length > 0) {
-    tabs.push({ key: 'docker', label: 'Docker', icon: Container })
+    tabs.push({ key: "docker", label: "Docker", icon: Container });
   }
   // Lucky 服务：启用且有数据
   if (navStore.luckyServicesEnabled && navStore.allLuckyServices.length > 0) {
-    tabs.push({ key: 'luckyServices', label: 'Lucky 服务', icon: Server })
+    tabs.push({ key: "luckyServices", label: "Lucky 服务", icon: Server });
   }
-  
-  return tabs
-})
+
+  return tabs;
+});
 
 // 当前标签页
-const currentTab = computed(() => configStore.currentTab)
+const currentTab = computed(() => configStore.currentTab);
 
 // 切换标签页
 function switchTab(tab: TabType) {
-  configStore.setCurrentTab(tab)
+  configStore.setCurrentTab(tab);
 }
 
 // 监听标签页变化，控制数据轮询
-watch(currentTab, (newTab: TabType) => {
-  navStore.stopDockerStatsPolling()
-  navStore.stopLuckyServicesStatsPolling()
+watch(
+  currentTab,
+  (newTab: TabType) => {
+    navStore.stopDockerStatsPolling();
+    navStore.stopLuckyServicesStatsPolling();
 
-  if (newTab === 'docker' && navStore.dockerEnabled) {
-    navStore.startDockerStatsPolling()
-  } else if (newTab === 'luckyServices' && navStore.luckyServicesEnabled) {
-    navStore.startLuckyServicesStatsPolling()
-  }
-}, { immediate: true })
+    if (newTab === "docker" && navStore.dockerEnabled) {
+      navStore.startDockerStatsPolling();
+    } else if (newTab === "luckyServices" && navStore.luckyServicesEnabled) {
+      navStore.startLuckyServicesStatsPolling();
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -56,10 +60,7 @@ watch(currentTab, (newTab: TabType) => {
         v-for="tab in availableTabs"
         :key="tab.key"
         class="content-tab"
-        :class="[
-          { active: currentTab === tab.key },
-          `tab-${tab.key}`
-        ]"
+        :class="[{ active: currentTab === tab.key }, `tab-${tab.key}`]"
         :data-tab="tab.key"
         @click="switchTab(tab.key)"
       >
@@ -75,20 +76,21 @@ watch(currentTab, (newTab: TabType) => {
 .content-tabs-wrapper {
   display: flex;
   justify-content: center;
-  margin-bottom: 24px;
+  /* margin-bottom removed for single-row layout */
 }
 
 /* 标签页容器 - 参考静态版本的玻璃效果 */
 .content-tabs {
   display: flex;
-  gap: 6px;
-  padding: 5px;
+  gap: 4px;
+  padding: 2px;
   background: hsl(var(--glass-bg));
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  -webkit-backdrop-filter: blur(var(--glass-blur))
+    saturate(var(--glass-saturation));
   border: 1px solid hsl(var(--glass-border));
-  border-radius: 16px;
-  box-shadow: 
+  border-radius: 12px;
+  box-shadow:
     0 8px 32px rgba(31, 38, 135, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
@@ -98,12 +100,13 @@ watch(currentTab, (newTab: TabType) => {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  height: 30px;
+  padding: 0 16px;
   border: none;
   background: transparent;
-  border-radius: 10px;
+  border-radius: 8px;
   color: hsl(var(--text-secondary));
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -123,7 +126,11 @@ watch(currentTab, (newTab: TabType) => {
 
 /* 激活状态 - 默认（站点） */
 .content-tab.active {
-  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-dark)) 100%);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--primary-dark)) 100%
+  );
   color: #fff;
   box-shadow: 0 4px 12px rgba(0, 140, 255, 0.35);
 }
@@ -162,7 +169,7 @@ watch(currentTab, (newTab: TabType) => {
 
 /* 深色主题适配 */
 [data-theme="dark"] .content-tabs {
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
@@ -172,7 +179,7 @@ watch(currentTab, (newTab: TabType) => {
   .content-tab {
     padding: 6px 10px;
   }
-  
+
   .content-tab span {
     display: none;
   }
