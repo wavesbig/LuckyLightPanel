@@ -14,6 +14,7 @@ import SettingsPanel from "@/components/settings/SettingsPanel.vue";
 import BackToTop from "@/components/common/BackToTop.vue";
 import LinkDropdown from "@/components/common/LinkDropdown.vue";
 import AppToolbar from "@/components/layout/AppToolbar.vue";
+import SearchBar from "@/components/common/SearchBar.vue";
 import { Settings } from "lucide-vue-next";
 
 const navStore = useNavStore();
@@ -219,6 +220,11 @@ onMounted(async () => {
 
     <!-- 主区域 -->
     <main class="main-content" :class="{ 'no-header': !showHeader }">
+      <!-- 聚合搜索栏 (仅在站点页面启用时显示) -->
+      <div class="mb-6">
+        <SearchBar />
+      </div>
+
       <!-- 顶部控制栏 (Tabs + Toolbar) -->
       <div class="control-bar mb-6">
         <ContentTabs class="flex-shrink-0" />
