@@ -215,8 +215,8 @@ onUnmounted(() => {
   position: relative;
   display: flex;
   align-items: center;
-  height: 3.5rem;
-  border-radius: 1.75rem;
+  height: 3rem; /* 从 3.5rem (56px) 缩小到 3rem (48px) */
+  border-radius: 1.5rem; /* 配合缩小的高度 */
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -238,38 +238,31 @@ onUnmounted(() => {
   pointer-events: none;
 }
 
-/* 毛玻璃搜索栏 */
+/* 毛玻璃搜索栏核心质感 - 匹配侧边栏 */
 .glass-search {
   background: hsl(var(--glass-bg));
-  backdrop-filter: blur(var(--glass-blur, 20px)) saturate(var(--glass-saturation, 180%));
-  -webkit-backdrop-filter: blur(var(--glass-blur, 20px)) saturate(var(--glass-saturation, 180%));
-  border: 1.5px solid hsl(var(--glass-border));
-  box-shadow: 
-    0 4px 24px -6px rgba(0, 0, 0, 0.2),
-    0 8px 32px -8px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 hsl(var(--site-card-inner-glow, 0 0% 100% / 0.06)),
-    inset 0 -1px 0 hsl(0 0% 0% / 0.05);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid hsl(var(--glass-border));
+  box-shadow: var(--shadow-xl), var(--glass-border-glow);
 }
 
 .glass-search:hover {
-  border-color: hsl(var(--glass-border-glow, var(--neon-cyan) / 0.4));
+  background: hsl(var(--glass-bg));
+  border-color: hsl(var(--primary) / 0.4);
   transform: translateY(-1px);
   box-shadow: 
-    0 8px 32px -6px rgba(0, 0, 0, 0.25),
-    0 12px 48px -12px hsl(var(--neon-cyan) / 0.15),
-    inset 0 1px 0 hsl(var(--site-card-inner-glow, 0 0% 100% / 0.1)),
-    inset 0 -1px 0 hsl(0 0% 0% / 0.05);
+    var(--shadow-xl), 
+    0 8px 24px -6px hsl(var(--primary) / 0.15);
 }
 
 .glass-search:focus-within {
-  border-color: hsl(var(--neon-cyan) / 0.6);
-  transform: translateY(-2px);
+  background: hsl(var(--glass-bg));
+  border-color: hsl(var(--primary) / 0.6);
   box-shadow: 
-    0 12px 40px -8px rgba(0, 0, 0, 0.3),
-    0 16px 56px -16px hsl(var(--neon-cyan) / 0.25),
-    0 0 0 4px hsl(var(--neon-cyan) / 0.08),
-    inset 0 1px 0 hsl(var(--site-card-inner-glow, 0 0% 100% / 0.12)),
-    inset 0 -1px 0 hsl(0 0% 0% / 0.05);
+    var(--shadow-xl),
+    0 0 0 2px hsl(var(--primary) / 0.2),
+    0 16px 32px -8px hsl(var(--primary) / 0.15);
 }
 
 /* ============================================
@@ -278,31 +271,35 @@ onUnmounted(() => {
 .engine-dropdown-wrapper {
   position: relative;
   flex-shrink: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .engine-selector {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0 1.125rem;
-  height: 100%;
+  gap: 0.375rem;
+  padding: 0 0.625rem 0 0.875rem; /* 左右微微不对称调整视觉重心 */
+  height: calc(100% - 1rem); /* 上下留有缝隙，构成子胶囊 */
+  margin-left: 0.5rem;
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   color: hsl(var(--text-secondary));
-  border-right: 1px solid hsl(var(--border-subtle) / 0.3);
-  border-radius: 1.75rem 0 0 1.75rem;
+  border-radius: 1.5rem; /* 完整的全圆角 */
 }
 
 .engine-selector:hover {
-  background: hsl(var(--glass-bg-hover, var(--bg-elevated) / 0.6));
+  background: hsl(var(--primary) / 0.08); /* 极淡的主题色背景 */
   color: hsl(var(--text-primary));
 }
 
 .engine-selector.active {
-  background: hsl(var(--glass-bg-hover, var(--bg-elevated) / 0.6));
-  color: hsl(var(--neon-cyan));
+  background: hsl(var(--primary) / 0.12); /* 选中时的深一点主题色 */
+  color: hsl(var(--primary));
+  box-shadow: inset 0 0 0 1px hsl(var(--primary) / 0.1);
 }
 
 .engine-icon {
@@ -343,34 +340,35 @@ onUnmounted(() => {
    ============================================ */
 .engine-dropdown {
   position: absolute;
-  top: calc(100% + 0.75rem);
+  top: calc(100% + 1rem); /* 让弹出的菜单离胶囊按钮远一些 */
   left: 0;
-  min-width: 180px;
-  border-radius: 1rem;
-  background: hsl(var(--bg-elevated));
-  backdrop-filter: blur(24px) saturate(1.8);
-  -webkit-backdrop-filter: blur(24px) saturate(1.8);
-  border: 1px solid hsl(var(--border-subtle) / 0.6);
+  min-width: 220px; /* 增加最小宽度 */
+  border-radius: var(--radius-xl);
+  background: hsl(var(--bg-elevated) / 0.85); /* 提升通透感 */
+  backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
+  border: 1px solid hsl(var(--glass-border) / 0.8);
   box-shadow: 
-    0 8px 32px -4px rgba(0, 0, 0, 0.35),
-    0 16px 48px -8px rgba(0, 0, 0, 0.2),
-    0 0 0 1px hsl(var(--neon-cyan) / 0.05);
+    var(--shadow-xl), 
+    0 0 0 1px hsl(var(--neon-cyan) / 0.05),
+    inset 0 1px 0 hsl(0 0% 100% / 0.1);
   z-index: 9999;
   overflow: hidden;
+  transform-origin: top left;
 }
 
 .dropdown-header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.875rem 1rem;
-  font-size: 0.6875rem;
+  padding: 1rem 1.25rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: hsl(var(--text-muted));
-  border-bottom: 1px solid hsl(var(--border-subtle) / 0.3);
+  color: hsl(var(--text-secondary));
+  border-bottom: 1px solid hsl(var(--border-subtle) / 0.4);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  background: hsl(var(--bg-page) / 0.5);
+  background: transparent;
 }
 
 .header-icon {
@@ -386,32 +384,33 @@ onUnmounted(() => {
 }
 
 .dropdown-options {
-  padding: 0.5rem;
+  padding: 0.6rem;
 }
 
 .engine-option {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.875rem;
   width: 100%;
-  padding: 0.75rem 0.875rem;
-  border-radius: 0.625rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-lg);
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   color: hsl(var(--text-secondary));
 }
 
 .engine-option:hover {
-  background: hsl(var(--glass-bg-hover));
+  background: hsl(var(--primary) / 0.08); /* 使用主题色取代之前的灰色 */
   color: hsl(var(--text-primary));
-  transform: translateX(2px);
+  transform: translateX(4px); /* 放大反馈 */
 }
 
 .engine-option.active {
-  background: hsl(var(--neon-cyan) / 0.12);
-  color: hsl(var(--neon-cyan));
+  background: hsl(var(--primary) / 0.12);
+  color: hsl(var(--primary));
+  font-weight: 600;
 }
 
 .option-icon {
@@ -465,14 +464,9 @@ onUnmounted(() => {
    ============================================ */
 .input-divider {
   width: 1px;
-  height: 1.75rem;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    hsl(var(--border-subtle) / 0.5),
-    transparent
-  );
-  margin: 0 0.25rem;
+  height: 1.25rem;
+  background: hsl(var(--border-subtle) / 0.5); /* 摈弃复杂的渐变 */
+  margin: 0 0.5rem 0 0.25rem;
 }
 
 /* ============================================
@@ -497,29 +491,30 @@ onUnmounted(() => {
 }
 
 /* ============================================
-   搜索按钮 - Pro Max 设计
+   搜索按钮 - 简约圆形设计
    ============================================ */
 .search-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 4rem;
-  height: calc(100% - 0.5rem);
-  margin: 0.25rem;
-  margin-left: 0;
-  border-radius: 1.25rem;
-  background: linear-gradient(135deg, hsl(var(--neon-cyan)), hsl(var(--neon-blue)));
-  border: none;
+  width: 2.25rem; /* 正圆形 36px */
+  height: 2.25rem;
+  margin: 0.375rem; /* 与右边缘保持同等圆角间距 */
+  border-radius: 50%;
+  background: hsl(var(--primary) / 0.15); /* 提高一点默认背景透明度 */
+  color: hsl(var(--primary));
+  border: 1px solid hsl(var(--primary) / 0.2); /* 增加一个同色系极细边框以凸出轮廓 */
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .btn-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, hsl(var(--neon-cyan)), hsl(var(--neon-purple)));
+  background: hsl(var(--primary));
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -529,25 +524,28 @@ onUnmounted(() => {
 }
 
 .search-btn:hover {
-  transform: scale(1.02);
-  box-shadow: 
-    0 4px 16px -2px hsl(var(--neon-cyan) / 0.4),
-    0 8px 24px -4px hsl(var(--neon-purple) / 0.3);
+  color: white; /* 悬停时图标反白 */
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px -2px hsl(var(--primary) / 0.4);
 }
 
 .search-btn:active {
-  transform: scale(0.98);
+  transform: scale(0.95);
 }
 
 .search-icon,
 .external-icon {
   width: 1.25rem;
   height: 1.25rem;
-  color: white;
+  color: hsl(var(--primary)); /* 恢复为主题色，而不是强制白色 */
   position: absolute;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   z-index: 1;
+}
+
+.search-btn:hover .search-icon,
+.search-btn:hover .external-icon {
+  color: white; /* 悬停时才反白 */
 }
 
 .search-icon {
@@ -579,11 +577,13 @@ onUnmounted(() => {
   }
   
   .search-bar {
-    height: 3.75rem;
+    height: 3.25rem; /* PC端稍微加大到 52px */
+    border-radius: 1.625rem;
   }
   
   .search-btn {
-    width: 4.5rem;
+    width: 2.5rem; /* 40px */
+    height: 2.5rem;
   }
 }
 
@@ -604,7 +604,7 @@ onUnmounted(() => {
   }
   
   .search-bar {
-    height: 3.25rem;
+    height: 3rem;
     border-radius: 1.5rem;
   }
   
@@ -618,8 +618,8 @@ onUnmounted(() => {
   }
   
   .search-btn {
-    width: 3.25rem;
-    border-radius: 1rem;
+    width: 2.25rem;
+    height: 2.25rem;
   }
   
   .search-icon,

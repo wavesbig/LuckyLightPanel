@@ -189,25 +189,26 @@ onMounted(async () => {
 
     <!-- 主区域 -->
     <main class="main-content" :style="{ marginLeft: contentMargin }">
-      <!-- 顶部工具栏和搜索 -->
-      <div class="top-bar">
+      <!-- 顶部头部：汉堡按钮和搜索栏 -->
+      <header class="app-header">
         <!-- 移动端汉堡按钮 -->
         <button 
           class="hamburger-btn" 
           @click="configStore.toggleSidebar()"
+          title="展开侧边栏"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
 
-        <!-- 搜索栏 -->
+        <!-- 居中的搜索栏 -->
         <div v-if="configStore.showSearch" class="search-wrapper">
           <SearchBar />
         </div>
-        
-        <!-- 工具栏 -->
-        <div class="toolbar-wrapper">
-          <AppToolbar />
-        </div>
+      </header>
+
+      <!-- 视图操作栏 -->
+      <div class="view-toolbar">
+        <AppToolbar />
       </div>
 
       <!-- 内容区域 -->
@@ -268,33 +269,44 @@ onMounted(async () => {
   display: none;
 }
 
-/* 顶部工具栏 */
-.top-bar {
+/* 顶部搜索区 */
+.app-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
+  justify-content: center; /* 默认居中对齐 */
+  position: relative;
+  min-height: 56px;
   margin-bottom: 2rem;
 }
 
+/* 搜索栏包装器 */
 .search-wrapper {
-  flex: 1;
-  max-width: 600px;
+  width: 100%;
+  max-width: 720px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.toolbar-wrapper {
-  margin-left: auto;
+/* 视图工具栏 */
+.view-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+  z-index: 10;
+  position: relative;
 }
 
-/* 汉堡按钮 - 默认隐藏 */
+/* 汉堡按钮 - 默认隐藏，脱离文档流以防挤占完美居中空间 */
 .hamburger-btn {
   display: none;
+  position: absolute;
+  left: 0;
   background: transparent;
   border: none;
   color: hsl(var(--text-primary));
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s;
 }
 
 .hamburger-btn:hover {
@@ -303,14 +315,8 @@ onMounted(async () => {
 
 /* 响应式调整 */
 @media (max-width: 1024px) {
-  .top-bar {
-    /* 移动端改为一行，汉堡按钮在左 */
-    flex-wrap: wrap; 
-    gap: 1rem;
-  }
-  
-  .search-wrapper {
-    min-width: 200px;
+  .app-header {
+    margin-bottom: 1.5rem;
   }
 }
 
@@ -329,21 +335,24 @@ onMounted(async () => {
     pointer-events: auto;
   }
   
+  .app-header {
+    justify-content: flex-start; /* 移动端靠左为汉堡留位 */
+    margin-bottom: 1.5rem;
+  }
+
   .hamburger-btn {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    position: relative; /* 恢复文档流 */
+    margin-right: 0.75rem;
   }
   
   .search-wrapper {
-    order: 2;
-    width: 100%;
-    margin-top: 0.5rem;
+    flex: 1;
     max-width: none;
   }
   
-  .toolbar-wrapper {
-    margin-left: 0;
+  .view-toolbar {
+    justify-content: flex-start; /* 小屏工具栏可左对齐 */
   }
 }
 </style>
