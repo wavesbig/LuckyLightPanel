@@ -5,8 +5,7 @@ import { useConfigStore } from "@/stores/config";
 import type { TabType } from "@/types";
 import TechBackground from "@/components/common/TechBackground.vue";
 import LoadingScreen from "@/components/common/LoadingScreen.vue";
-import AppHeader from "@/components/layout/AppHeader.vue";
-import ContentTabs from "@/components/common/ContentTabs.vue";
+import AppSidebar from "@/components/layout/AppSidebar.vue";
 import SiteGrid from "@/components/sites/SiteGrid.vue";
 import DockerGrid from "@/components/docker/DockerGrid.vue";
 import ServiceGrid from "@/components/luckyServices/ServiceGrid.vue";
@@ -15,10 +14,14 @@ import BackToTop from "@/components/common/BackToTop.vue";
 import LinkDropdown from "@/components/common/LinkDropdown.vue";
 import AppToolbar from "@/components/layout/AppToolbar.vue";
 import SearchBar from "@/components/common/SearchBar.vue";
-import { Settings } from "lucide-vue-next";
 
 const navStore = useNavStore();
 const configStore = useConfigStore();
+
+// 计算内容区域的左边距 (Desktop only)
+const contentMargin = computed(() => 
+  configStore.sidebarCollapsed ? '136px' : '308px'
+);
 
 // 链接下拉菜单组件引用
 const linkDropdownRef = ref<InstanceType<typeof LinkDropdown> | null>(null);
@@ -44,7 +47,6 @@ const hasDocker = computed(
 const hasLuckyServices = computed(
   () => navStore.luckyServicesEnabled && navStore.allLuckyServices.length > 0,
 );
-const showHeader = computed(() => configStore.showHeader);
 
 // 获取第一个可用的标签页
 function getFirstAvailableTab(): TabType | null {
@@ -117,6 +119,22 @@ watch(
   { immediate: true },
 );
 
+// 监听标签页变化，控制数据轮询
+watch(
+  currentTab,
+  (newTab: TabType) => {
+    navStore.stopDockerStatsPolling();
+    navStore.stopLuckyServicesStatsPolling();
+
+    if (newTab === "docker" && navStore.dockerEnabled) {
+      navStore.startDockerStatsPolling();
+    } else if (newTab === "luckyServices" && navStore.luckyServicesEnabled) {
+      navStore.startLuckyServicesStatsPolling();
+    }
+  },
+  { immediate: true },
+);
+
 // 初始化
 onMounted(async () => {
   // 先加载本地配置（包含默认值）
@@ -142,62 +160,15 @@ onMounted(async () => {
 
   // 检查当前标签页是否有效，无效则切换到第一个可用标签页
   ensureValidTab();
+  
+  // 移动端默认折叠侧边栏
+  if (window.innerWidth < 768) {
+    configStore.setSidebarCollapsed(true);
+  }
 });
 </script>
 
 <template>
-  <!-- 素描风格 SVG 滤镜定义 -->
-  <svg width="0" height="0" style="position: absolute">
-    <defs>
-      <!-- 素描滤镜 - 边缘抖动效果 -->
-      <filter
-        id="sketch-filter"
-        filterUnits="objectBoundingBox"
-        x="-10%"
-        y="-10%"
-        width="120%"
-        height="120%"
-      >
-        <feTurbulence
-          type="fractalNoise"
-          baseFrequency="0.04"
-          numOctaves="3"
-          result="noise"
-        />
-        <feDisplacementMap
-          in="SourceGraphic"
-          in2="noise"
-          scale="2"
-          xChannelSelector="R"
-          yChannelSelector="G"
-        />
-      </filter>
-      <!-- 素描滤镜 - 悬停时轻微加强 -->
-      <filter
-        id="sketch-filter-hover"
-        filterUnits="objectBoundingBox"
-        x="-10%"
-        y="-10%"
-        width="120%"
-        height="120%"
-      >
-        <feTurbulence
-          type="fractalNoise"
-          baseFrequency="0.03"
-          numOctaves="2"
-          result="noise"
-        />
-        <feDisplacementMap
-          in="SourceGraphic"
-          in2="noise"
-          scale="1.5"
-          xChannelSelector="R"
-          yChannelSelector="G"
-        />
-      </filter>
-    </defs>
-  </svg>
-
   <!-- 科技感动态背景 -->
   <TechBackground />
 
@@ -206,41 +177,52 @@ onMounted(async () => {
 
   <!-- 主内容 -->
   <div v-else class="app-main">
-    <!-- 页头 -->
-    <AppHeader v-if="showHeader" />
-
-    <!-- 浮动设置按钮（仅在隐藏页头时显示） -->
-    <button
-      v-if="!showHeader"
-      class="floating-settings-btn"
-      @click="configStore.toggleSettingsPanel(true)"
-    >
-      <Settings class="floating-settings-icon" />
-    </button>
+    <!-- 侧边栏 -->
+    <AppSidebar />
+    
+    <!-- 移动端遮罩层 -->
+    <div 
+      class="mobile-overlay" 
+      :class="{ show: !configStore.sidebarCollapsed }"
+      @click="configStore.setSidebarCollapsed(true)"
+    />
 
     <!-- 主区域 -->
-    <main class="main-content" :class="{ 'no-header': !showHeader }">
-      <!-- 聚合搜索栏 (仅在站点页面启用时显示) -->
-      <div v-if="configStore.showSearch" class="mb-6">
-        <SearchBar />
+    <main class="main-content" :style="{ marginLeft: contentMargin }">
+      <!-- 顶部工具栏和搜索 -->
+      <div class="top-bar">
+        <!-- 移动端汉堡按钮 -->
+        <button 
+          class="hamburger-btn" 
+          @click="configStore.toggleSidebar()"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+
+        <!-- 搜索栏 -->
+        <div v-if="configStore.showSearch" class="search-wrapper">
+          <SearchBar />
+        </div>
+        
+        <!-- 工具栏 -->
+        <div class="toolbar-wrapper">
+          <AppToolbar />
+        </div>
       </div>
 
-      <!-- 顶部控制栏 (Tabs + Toolbar) -->
-      <div class="control-bar mb-6">
-        <ContentTabs class="flex-shrink-0" />
-        <AppToolbar class="flex-grow-1" />
+      <!-- 内容区域 -->
+      <div class="content-area">
+        <!-- 站点网格 -->
+        <SiteGrid v-if="currentTab === 'sites' && hasSites" />
+
+        <!-- Docker 网格 -->
+        <DockerGrid v-else-if="currentTab === 'docker' && hasDocker" />
+
+        <!-- Lucky 服务网格 -->
+        <ServiceGrid
+          v-else-if="currentTab === 'luckyServices' && hasLuckyServices"
+        />
       </div>
-
-      <!-- 站点网格 -->
-      <SiteGrid v-if="currentTab === 'sites' && hasSites" />
-
-      <!-- Docker 网格 -->
-      <DockerGrid v-else-if="currentTab === 'docker' && hasDocker" />
-
-      <!-- Lucky 服务网格 -->
-      <ServiceGrid
-        v-else-if="currentTab === 'luckyServices' && hasLuckyServices"
-      />
     </main>
 
     <!-- 设置面板 -->
@@ -258,92 +240,110 @@ onMounted(async () => {
 .app-main {
   min-height: 100vh;
   min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
+  display: flex; /* Flex row by default */
 }
 
 .main-content {
   flex: 1;
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0.75rem 1rem 2rem;
+  /* 
+     Floating Sidebar Logic:
+     Margin handled by :style binding in template for better reliability.
+  */
+  padding: 1.5rem 2rem;
+  transition: margin-left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
 }
 
-.main-content.no-header {
-  padding-top: 1rem;
+/* 移动端遮罩层 */
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 900; /* Sidebar is 1000 */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  display: none;
 }
 
-@media (min-width: 640px) {
-  .main-content {
-    padding: 0.75rem 1.5rem 2.5rem;
-  }
-
-  .main-content.no-header {
-    padding-top: 1.5rem;
-  }
-}
-
-/* 控制栏布局 */
-.control-bar {
+/* 顶部工具栏 */
+.top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
-.mb-6 {
-  margin-bottom: 1.5rem;
+.search-wrapper {
+  flex: 1;
+  max-width: 600px;
 }
 
-/* 移动端调整 */
-@media (max-width: 640px) {
-  .control-bar {
-    flex-direction: column;
-    align-items: stretch;
+.toolbar-wrapper {
+  margin-left: auto;
+}
+
+/* 汉堡按钮 - 默认隐藏 */
+.hamburger-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: hsl(var(--text-primary));
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.hamburger-btn:hover {
+  background: hsl(var(--bg-elevated));
+}
+
+/* 响应式调整 */
+@media (max-width: 1024px) {
+  .top-bar {
+    /* 移动端改为一行，汉堡按钮在左 */
+    flex-wrap: wrap; 
+    gap: 1rem;
+  }
+  
+  .search-wrapper {
+    min-width: 200px;
   }
 }
 
-/* 浮动设置按钮 */
-.floating-settings-btn {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 100;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.75rem;
-  border: 1px solid hsl(var(--glass-border) / 0.3);
-  background: hsl(var(--glass-bg) / 0.3);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  color: hsl(var(--text-muted) / 0.4);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 300ms ease;
-  box-shadow: none;
-  opacity: 0.5;
-}
-
-.floating-settings-btn:hover {
-  opacity: 1;
-  color: hsl(var(--neon-cyan));
-  border-color: hsl(var(--neon-cyan) / 0.4);
-  background: hsl(var(--glass-bg));
-  box-shadow: 0 0 15px hsl(var(--neon-cyan) / 0.3);
-  transform: scale(1.05);
-}
-
-.floating-settings-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  transition: transform 500ms;
-}
-
-.floating-settings-btn:hover .floating-settings-icon {
-  transform: rotate(90deg);
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0 !important; /* 强制覆盖 v-bind */
+    padding: 1rem;
+  }
+  
+  .mobile-overlay {
+    display: block;
+  }
+  
+  .mobile-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .hamburger-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .search-wrapper {
+    order: 2;
+    width: 100%;
+    margin-top: 0.5rem;
+    max-width: none;
+  }
+  
+  .toolbar-wrapper {
+    margin-left: 0;
+  }
 }
 </style>

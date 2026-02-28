@@ -170,7 +170,7 @@ export interface NetworkTypeResponse {
 // ============ 用户配置类型 ============
 
 /** 主题模式 */
-export type ThemeMode = 'light' | 'dark' | 'sketch-light' | 'sketch-dark'
+export type ThemeMode = 'light' | 'dark'
 
 /** 布局模式 */
 export type LayoutMode = 'compact' | 'normal' | 'large' | 'list' | 'minimal'
@@ -220,6 +220,7 @@ export interface UserConfig {
   tabGroups: TabGroups
   networkMode: NetworkMode
   currentTab: TabType
+  sidebarCollapsed: boolean
 }
 
 // ============ 预设背景类型 ============

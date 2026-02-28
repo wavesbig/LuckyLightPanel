@@ -58,7 +58,8 @@ const DEFAULT_CONFIG: UserConfig = {
   customSearchUrl: '',
   tabGroups: { ...DEFAULT_TAB_GROUPS },
   networkMode: 'hybrid',
-  currentTab: 'sites'
+  currentTab: 'sites',
+  sidebarCollapsed: false
 }
 
 export const useConfigStore = defineStore('config', () => {
@@ -82,14 +83,6 @@ export const useConfigStore = defineStore('config', () => {
 
   // 计算属性：背景样式
   const backgroundStyle = computed(() => {
-    // 素描主题使用纸张质感纯色背景
-    if (config.value.theme === 'sketch-dark') {
-      return { background: 'hsl(40 12% 8%)' }
-    }
-    if (config.value.theme === 'sketch-light') {
-      return { background: 'hsl(45 30% 88%)' }
-    }
-
     const bg = config.value.background
 
     // 自定义背景
@@ -130,13 +123,13 @@ export const useConfigStore = defineStore('config', () => {
   const luckyServicesLayout = computed(() => config.value.luckyServicesLayout)
   const networkMode = computed(() => config.value.networkMode)
   const currentTab = computed(() => config.value.currentTab)
-  
+
   // 当前分组选择（支持多选）
   const currentGroup = computed<GroupSelection>(() => {
     const tab = config.value.currentTab
     return config.value.tabGroups[tab] || 'all'
   })
-  
+
   // 当前分组选择的规范化数组形式
   const currentGroupArray = computed<string[]>(() => {
     const group = currentGroup.value
@@ -144,7 +137,7 @@ export const useConfigStore = defineStore('config', () => {
     if (Array.isArray(group)) return group
     return [group]
   })
-  
+
   // 是否选中“全部”
   const isAllSelected = computed(() => {
     const group = currentGroup.value
@@ -179,7 +172,7 @@ export const useConfigStore = defineStore('config', () => {
     }
 
     // 验证主题有效性
-    const validThemes = ['light', 'dark', 'sketch-light', 'sketch-dark']
+    const validThemes = ['light', 'dark']
     if (!validThemes.includes(config.value.theme)) {
       config.value.theme = 'dark'
       saveConfig()
@@ -203,7 +196,7 @@ export const useConfigStore = defineStore('config', () => {
     }
 
     console.log('Applying server config as defaults:', serverConfig)
-    
+
     // 应用配置模板中定义的字段
     const validKeys: (keyof UserConfig)[] = [
       'theme', 'background', 'layout', 'dockerLayout', 'luckyServicesLayout',
@@ -220,7 +213,7 @@ export const useConfigStore = defineStore('config', () => {
           console.log('Server backgrounds exist, skipping default background config')
           continue
         }
-        
+
         try {
           const value = serverConfig[key] as UserConfig[typeof key]
           if (config.value[key] !== value) {
@@ -245,14 +238,14 @@ export const useConfigStore = defineStore('config', () => {
   function setServerBackgrounds(urls: string[]) {
     // 过滤空值
     const validUrls = urls.filter(url => url && url.trim() !== '')
-    
+
     serverBackgrounds.value = validUrls.map((url, index) => ({
       id: `server_${index}`,
       name: `服务器背景 ${index + 1}`,
       type: 'image' as const,
       value: url
     }))
-    
+
     // 如果没有本地配置且有服务器背景图片链接，优先使用第一个背景图片
     // 这确保了：背景图片链接 > 预设渐变背景
     if (!hasStoredConfig.value && validUrls.length > 0) {
@@ -261,7 +254,7 @@ export const useConfigStore = defineStore('config', () => {
       saveConfig()
       return
     }
-    
+
     // 如果有本地配置，检查当前背景是否有效
     validateCurrentBackground()
   }
@@ -334,24 +327,24 @@ export const useConfigStore = defineStore('config', () => {
     const newTabGroups = { ...config.value.tabGroups, [tab]: group }
     updateConfig('tabGroups', newTabGroups)
   }
-  
+
   // 切换分组选中状态（多选模式）
   function toggleGroup(groupKey: string) {
     const tab = config.value.currentTab
     const current = config.value.tabGroups[tab]
-    
+
     // 如果点击“全部”，直接设置为 'all'
     if (groupKey === 'all') {
       setCurrentGroup('all')
       return
     }
-    
+
     // 当前是 'all'，切换到单选该分组
     if (current === 'all') {
       setCurrentGroup([groupKey])
       return
     }
-    
+
     // 当前是数组
     if (Array.isArray(current)) {
       const index = current.indexOf(groupKey)
@@ -366,7 +359,7 @@ export const useConfigStore = defineStore('config', () => {
       }
       return
     }
-    
+
     // 当前是单个字符串（旧格式单选）
     if (current === groupKey) {
       // 点击已选中的，取消选中回到 'all'
@@ -376,7 +369,7 @@ export const useConfigStore = defineStore('config', () => {
       setCurrentGroup([current, groupKey])
     }
   }
-  
+
   // 检查分组是否被选中
   function isGroupSelected(groupKey: string): boolean {
     const group = currentGroup.value
@@ -432,6 +425,16 @@ export const useConfigStore = defineStore('config', () => {
     updateConfig('customSearchUrl', url)
   }
 
+  // 切换侧边栏折叠
+  function toggleSidebar() {
+    updateConfig('sidebarCollapsed', !config.value.sidebarCollapsed)
+  }
+
+  // 设置侧边栏折叠状态
+  function setSidebarCollapsed(collapsed: boolean) {
+    updateConfig('sidebarCollapsed', collapsed)
+  }
+
   // 切换设置面板
   function toggleSettingsPanel(open?: boolean) {
     settingsPanelOpen.value = open ?? !settingsPanelOpen.value
@@ -470,6 +473,7 @@ export const useConfigStore = defineStore('config', () => {
     searchEngine,
     customSearchUrl,
     currentSearchKeyword,
+    sidebarCollapsed: computed(() => config.value.sidebarCollapsed),
 
     // 方法
     loadConfig,
@@ -496,6 +500,8 @@ export const useConfigStore = defineStore('config', () => {
     setServerBackgrounds,
     validateCurrentBackground,
     toggleSettingsPanel,
+    toggleSidebar,
+    setSidebarCollapsed,
     resetConfig
   }
 })
