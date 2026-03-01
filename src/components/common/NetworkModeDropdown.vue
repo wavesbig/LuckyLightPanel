@@ -109,6 +109,7 @@ onUnmounted(() => {
 <style scoped>
 .network-dropdown-wrapper {
   position: relative;
+  --local-color: 285 89% 65%; /* purple 500 */
 }
 
 /* 网络模式徽章按钮 - 统一毛玻璃风格 */
@@ -116,41 +117,42 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 10px;
-  font-size: 13px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  font-size: 14px;
   font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid hsl(var(--glass-border));
   cursor: pointer;
-  transition: all 0.2s ease;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  color: rgba(168, 85, 247, 0.95);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 8px -2px rgba(0, 0, 0, 0.15);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: hsl(var(--glass-bg));
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  color: hsl(var(--local-color));
+  box-shadow: var(--shadow-sm), var(--glass-border-glow);
 }
 
 .network-badge:hover {
-  background: rgba(0, 0, 0, 0.35);
-  border-color: rgba(168, 85, 247, 0.35);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 8px -2px rgba(0, 0, 0, 0.15),
-    0 0 12px -4px rgba(168, 85, 247, 0.3);
+  background: hsl(var(--glass-bg));
+  border-color: hsl(var(--local-color) / 0.4);
+  box-shadow: 
+    var(--shadow-sm), 
+    0 4px 12px -2px hsl(var(--local-color) / 0.15);
 }
 
 .badge-icon {
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .switch-icon {
-  font-size: 10px;
-  opacity: 0.7;
+  font-size: 12px;
+  opacity: 0.5;
   margin-left: 2px;
-  transition: transform 0.15s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.network-badge:hover .switch-icon {
+  opacity: 0.8;
 }
 
 .network-dropdown-wrapper.open .switch-icon {
@@ -162,23 +164,26 @@ onUnmounted(() => {
   position: absolute;
   top: calc(100% + 8px);
   left: 50%;
-  min-width: 120px;
-  max-width: 160px;
-  background: rgba(15, 20, 30, 0.85);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  padding: 6px;
+  min-width: 140px;
+  max-width: 180px;
+  background: hsl(var(--bg-elevated) / 0.85);
+  backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
+  border: 1px solid hsl(var(--glass-border) / 0.8);
+  border-radius: 16px;
+  box-shadow: 
+    var(--shadow-xl), 
+    inset 0 1px 0 hsl(0 0% 100% / 0.1);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   opacity: 0;
   visibility: hidden;
   transform: translateX(-50%) scale(0.95);
   transform-origin: top center;
-  transition: all 0.15s ease;
-  z-index: 100;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 9999;
 }
 
 .network-dropdown-wrapper.open .network-dropdown {
@@ -197,104 +202,32 @@ onUnmounted(() => {
   border: none;
   background: transparent;
   border-radius: 8px;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 13px;
+  color: hsl(var(--text-secondary));
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .network-option:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: hsl(var(--primary) / 0.08);
+  color: hsl(var(--text-primary));
 }
 
 .network-option.active {
-  background: rgba(168, 85, 247, 0.15);
-  color: #a855f7;
+  background: hsl(var(--local-color) / 0.1);
+  color: hsl(var(--local-color));
+  font-weight: 500;
 }
 
 .option-icon {
   width: 16px;
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
   flex-shrink: 0;
 }
 
-/* 浅色主题适配 */
-[data-theme="light"] .network-badge {
-  background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 2px 8px -2px rgba(0, 0, 0, 0.08);
-}
 
-[data-theme="light"] .network-badge:hover {
-  background: rgba(255, 255, 255, 0.75);
-  border-color: rgba(168, 85, 247, 0.4);
-}
-
-[data-theme="light"] .network-dropdown {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-[data-theme="light"] .network-option {
-  color: rgba(0, 0, 0, 0.75);
-}
-
-[data-theme="light"] .network-option:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-/* 素描浅色主题适配 */
-[data-theme="sketch-light"] .network-badge {
-  background: rgba(255, 255, 255, 0.5);
-  border-color: rgba(0, 0, 0, 0.12);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    0 2px 8px -2px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="sketch-light"] .network-badge:hover {
-  background: rgba(255, 255, 255, 0.65);
-  border-color: rgba(168, 85, 247, 0.35);
-}
-
-[data-theme="sketch-light"] .network-dropdown {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-[data-theme="sketch-light"] .network-option {
-  color: rgba(60, 50, 40, 0.85);
-}
-
-[data-theme="sketch-light"] .network-option:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-/* 素描深色主题适配 */
-[data-theme="sketch-dark"] .network-dropdown {
-  background: rgba(35, 30, 25, 0.95);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-}
-
-/* 深色主题适配 */
-[data-theme="dark"] .network-dropdown {
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-}
 
 /* 响应式 */
 @media (max-width: 640px) {

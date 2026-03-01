@@ -178,106 +178,65 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 10px;
-  font-size: 13px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  font-size: 14px;
   font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid hsl(var(--glass-border));
   cursor: pointer;
-  transition: all 0.2s ease;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 8px -2px rgba(0, 0, 0, 0.15);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: hsl(var(--glass-bg));
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  color: hsl(var(--text-secondary));
+  box-shadow: var(--shadow-sm), var(--glass-border-glow);
 }
 
 .group-badge:hover {
-  background: rgba(0, 0, 0, 0.35);
-  border-color: rgba(255, 255, 255, 0.18);
+  background: hsl(var(--glass-bg));
+  color: hsl(var(--text-primary));
 }
 
 .badge-icon {
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .switch-icon {
-  font-size: 10px;
-  opacity: 0.7;
+  font-size: 12px;
+  opacity: 0.5;
   margin-left: 2px;
-  transition: transform 0.15s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.group-badge:hover .switch-icon {
+  opacity: 0.8;
 }
 
 .group-dropdown-wrapper.open .switch-icon {
   transform: rotate(180deg);
 }
 
-/* 青蓝色（默认/站点） */
-.color-cyan .group-badge {
-  color: rgba(6, 182, 212, 0.95);
+/* 颜色重载 - 边框和文字色彩 */
+.color-cyan { --local-color: 188 86% 53%; }  /* Cyan 500 */
+.color-docker { --local-color: 206 84% 54%; } /* Blue 500 */
+.color-green { --local-color: 160 84% 39%; }  /* Emerald 600 */
+
+.color-cyan .group-badge, .color-docker .group-badge, .color-green .group-badge {
+  color: hsl(var(--local-color, var(--primary)));
 }
 
-.color-cyan .group-badge:hover {
-  border-color: rgba(6, 182, 212, 0.35);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 8px -2px rgba(0, 0, 0, 0.15),
-    0 0 12px -4px rgba(6, 182, 212, 0.3);
+.color-cyan .group-badge:hover, .color-docker .group-badge:hover, .color-green .group-badge:hover {
+  border-color: hsl(var(--local-color, var(--primary)) / 0.4);
+  box-shadow: 
+    var(--shadow-sm), 
+    0 4px 12px -2px hsl(var(--local-color, var(--primary)) / 0.15);
 }
 
-.color-cyan .group-option.active {
-  background: rgba(6, 182, 212, 0.15);
-  color: #06b6d4;
-}
-
-.color-cyan .check-icon {
-  color: #06b6d4;
-}
-
-/* Docker 蓝色 */
-.color-docker .group-badge {
-  color: rgba(36, 150, 237, 0.95);
-}
-
-.color-docker .group-badge:hover {
-  border-color: rgba(36, 150, 237, 0.35);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 8px -2px rgba(0, 0, 0, 0.15),
-    0 0 12px -4px rgba(36, 150, 237, 0.3);
-}
-
-.color-docker .group-option.active {
-  background: rgba(36, 150, 237, 0.15);
-  color: #2496ed;
-}
-
-.color-docker .check-icon {
-  color: #2496ed;
-}
-
-/* Lucky服务绿色 */
-.color-green .group-badge {
-  color: rgba(16, 185, 129, 0.95);
-}
-
-.color-green .group-badge:hover {
-  border-color: rgba(16, 185, 129, 0.35);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 8px -2px rgba(0, 0, 0, 0.15),
-    0 0 12px -4px rgba(16, 185, 129, 0.3);
-}
-
-.color-green .group-option.active {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10b981;
-}
-
-.color-green .check-icon {
-  color: #10b981;
+.group-option.active {
+  background: hsl(var(--local-color, var(--primary)) / 0.1);
+  color: hsl(var(--local-color, var(--primary)));
+  font-weight: 500;
 }
 
 /* 下拉菜单 */
@@ -285,25 +244,25 @@ onUnmounted(() => {
   position: absolute;
   top: calc(100% + 8px);
   left: 50%;
-  min-width: 160px;
-  max-width: 220px;
+  min-width: 180px;
+  max-width: 240px;
   max-height: 320px;
   overflow-y: auto;
-  background: rgba(15, 20, 30, 0.92);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  padding: 6px;
+  border-radius: 16px;
+  background: hsl(var(--bg-elevated) / 0.85);
+  backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
+  border: 1px solid hsl(var(--glass-border) / 0.8);
+  box-shadow: 
+    var(--shadow-xl), 
+    inset 0 1px 0 hsl(0 0% 100% / 0.1);
+  padding: 8px;
   opacity: 0;
   visibility: hidden;
   transform: translateX(-50%) scale(0.95);
   transform-origin: top center;
-  transition: all 0.15s ease;
-  z-index: 100;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 9999;
 }
 
 .group-dropdown-wrapper.open .group-dropdown {
@@ -318,8 +277,8 @@ onUnmounted(() => {
   align-items: center;
   width: 100%;
   border-radius: 8px;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 13px;
+  color: hsl(var(--text-secondary));
+  font-size: 14px;
   transition: all 0.15s ease;
   overflow: hidden;
 }
@@ -334,7 +293,8 @@ button.group-option {
 }
 
 button.group-option:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: hsl(var(--primary) / 0.08);
+  color: hsl(var(--text-primary));
 }
 
 /* 分组选项主体（左侧可点击区域） */
@@ -353,7 +313,8 @@ button.group-option:hover {
 }
 
 .option-main:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: hsl(var(--primary) / 0.08);
+  color: hsl(var(--text-primary));
 }
 
 .option-icon {
@@ -377,8 +338,8 @@ button.group-option:hover {
 .option-count {
   flex-shrink: 0;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.08);
+  color: hsl(var(--text-muted));
+  background: hsl(var(--glass-border));
   padding: 1px 6px;
   border-radius: 8px;
   margin-left: 4px;
@@ -395,7 +356,7 @@ button.group-option:hover {
   padding: 0;
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.4);
+  color: hsl(var(--text-muted));
   font-size: 14px;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -403,140 +364,22 @@ button.group-option:hover {
 }
 
 .option-checkbox:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
+  background: hsl(var(--primary) / 0.08);
+  color: hsl(var(--text-primary));
 }
 
 .option-checkbox.checked {
-  color: inherit;
+  color: hsl(var(--local-color, var(--primary)));
 }
 
 /* 分割线 */
 .dropdown-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: hsl(var(--glass-border) / 0.8);
   margin: 4px 8px;
 }
 
-/* 浅色主题适配 */
-[data-theme="light"] .group-badge {
-  background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 2px 8px -2px rgba(0, 0, 0, 0.08);
-}
 
-[data-theme="light"] .group-badge:hover {
-  background: rgba(255, 255, 255, 0.75);
-  border-color: rgba(0, 0, 0, 0.12);
-}
-
-[data-theme="light"] .group-dropdown {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-[data-theme="light"] .group-option {
-  color: rgba(0, 0, 0, 0.75);
-}
-
-[data-theme="light"] .group-option:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-[data-theme="light"] .dropdown-divider {
-  background: rgba(0, 0, 0, 0.06);
-}
-
-[data-theme="light"] .option-count {
-  color: rgba(0, 0, 0, 0.45);
-  background: rgba(0, 0, 0, 0.06);
-}
-
-[data-theme="light"] .option-main:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-[data-theme="light"] .option-checkbox {
-  color: rgba(0, 0, 0, 0.35);
-}
-
-[data-theme="light"] .option-checkbox:hover {
-  background: rgba(0, 0, 0, 0.08);
-  color: rgba(0, 0, 0, 0.6);
-}
-
-/* 素描浅色主题适配 */
-[data-theme="sketch-light"] .group-badge {
-  background: rgba(255, 255, 255, 0.5);
-  border-color: rgba(0, 0, 0, 0.12);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    0 2px 8px -2px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="sketch-light"] .group-badge:hover {
-  background: rgba(255, 255, 255, 0.65);
-  border-color: rgba(0, 0, 0, 0.15);
-}
-
-[data-theme="sketch-light"] .group-dropdown {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-[data-theme="sketch-light"] .group-option {
-  color: rgba(60, 50, 40, 0.85);
-}
-
-[data-theme="sketch-light"] button.group-option:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-[data-theme="sketch-light"] .option-main:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-[data-theme="sketch-light"] .dropdown-divider {
-  background: rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="sketch-light"] .option-count {
-  color: rgba(60, 50, 40, 0.5);
-  background: rgba(0, 0, 0, 0.06);
-}
-
-[data-theme="sketch-light"] .option-checkbox {
-  color: rgba(60, 50, 40, 0.4);
-}
-
-[data-theme="sketch-light"] .option-checkbox:hover {
-  background: rgba(0, 0, 0, 0.08);
-  color: rgba(60, 50, 40, 0.65);
-}
-
-/* 素描深色主题适配 */
-[data-theme="sketch-dark"] .group-dropdown {
-  background: rgba(35, 30, 25, 0.95);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-}
-
-/* 深色主题适配 */
-[data-theme="dark"] .group-dropdown {
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-}
 
 /* 响应式 */
 @media (max-width: 640px) {

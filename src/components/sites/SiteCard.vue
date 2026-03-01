@@ -344,6 +344,24 @@ const iconClass = computed(() => {
   cursor: pointer;
 }
 
+/* 列表模式基础容器复写 - 更加扁平清爽 */
+.cyber-card.layout-list {
+  background: hsl(var(--bg-elevated) / 0.5);
+  border: 1px solid hsl(var(--glass-border) / 0.5);
+  box-shadow: var(--shadow-sm);
+  border-radius: calc(var(--radius-lg) - 2px);
+}
+.cyber-card.layout-list:hover {
+  background: hsl(var(--primary) / 0.05);
+  border-color: hsl(var(--glass-border));
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.cyber-card.layout-list::before,
+.cyber-card.layout-list .card-border-glow {
+  display: none; /* 列表模式下去除多余发光层 */
+}
+
 /* 磨砂内层叠加 - 增强通透感 */
 .cyber-card::before {
   content: '';
@@ -371,7 +389,7 @@ const iconClass = computed(() => {
 }
 
 .cyber-card.layout-list {
-  padding: 0.75rem 0.875rem;
+  padding: 0.625rem 1rem;
 }
 
 .cyber-card.layout-minimal {
@@ -432,7 +450,7 @@ const iconClass = computed(() => {
 .card-inner.layout-list {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
+  gap: 1rem;
   width: 100%;
 }
 
@@ -577,6 +595,14 @@ const iconClass = computed(() => {
   opacity: 1;
   transform: translateX(0);
   color: hsl(var(--neon-cyan));
+}
+
+.cyber-card.layout-list .external-icon {
+  transform: translateX(0);
+  opacity: 0.5; /* 列表模式下默认微弱显示，而不是隐藏滑动 */
+}
+.cyber-card.layout-list:hover .external-icon {
+  opacity: 1;
 }
 
 /* 描述 */

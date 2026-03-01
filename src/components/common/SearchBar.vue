@@ -340,10 +340,10 @@ onUnmounted(() => {
    ============================================ */
 .engine-dropdown {
   position: absolute;
-  top: calc(100% + 1rem); /* 让弹出的菜单离胶囊按钮远一些 */
+  top: calc(100% + 8px); /* 让弹出的菜单离胶囊按钮远一些 */
   left: 0;
   min-width: 220px; /* 增加最小宽度 */
-  border-radius: var(--radius-xl);
+  border-radius: 16px;
   background: hsl(var(--bg-elevated) / 0.85); /* 提升通透感 */
   backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
   -webkit-backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
@@ -384,16 +384,19 @@ onUnmounted(() => {
 }
 
 .dropdown-options {
-  padding: 0.6rem;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .engine-option {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
+  gap: 8px;
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-lg);
+  padding: 8px 12px;
+  border-radius: 8px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -408,9 +411,9 @@ onUnmounted(() => {
 }
 
 .engine-option.active {
-  background: hsl(var(--primary) / 0.12);
+  background: hsl(var(--primary) / 0.1);
   color: hsl(var(--primary));
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .option-icon {

@@ -198,6 +198,7 @@ onUnmounted(() => {
 <style scoped>
 .layout-switcher-wrapper {
   position: relative;
+  --local-color: 25 95% 53%; /* Orange */
 }
 
 /* 布局切换徽章按钮 - Docker 统一毛玻璃风格 */
@@ -205,41 +206,38 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 10px;
-  font-size: 13px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  font-size: 14px;
   font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid hsl(var(--glass-border));
   cursor: pointer;
-  transition: all 0.2s ease;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  color: rgba(249, 115, 22, 0.95);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 8px -2px rgba(0, 0, 0, 0.15);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: hsl(var(--glass-bg));
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  color: hsl(var(--local-color));
+  box-shadow: var(--shadow-sm), var(--glass-border-glow);
 }
 
 .layout-badge:hover {
-  background: rgba(0, 0, 0, 0.35);
-  border-color: rgba(249, 115, 22, 0.35);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 8px -2px rgba(0, 0, 0, 0.15),
-    0 0 12px -4px rgba(249, 115, 22, 0.3);
+  background: hsl(var(--glass-bg));
+  border-color: hsl(var(--local-color) / 0.4);
+  box-shadow: 
+    var(--shadow-sm), 
+    0 4px 12px -2px hsl(var(--local-color) / 0.15);
 }
 
 .badge-icon {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .switch-icon {
-  font-size: 10px;
+  font-size: 12px;
   opacity: 0.7;
   margin-left: 2px;
-  transition: transform 0.15s ease;
+  transition: transform 0.25s ease;
 }
 
 .layout-switcher-wrapper.open .switch-icon {
@@ -251,21 +249,23 @@ onUnmounted(() => {
   position: absolute;
   top: calc(100% + 8px);
   left: 50%;
-  background: rgba(15, 20, 30, 0.85);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  background: hsl(var(--bg-elevated) / 0.85);
+  backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
+  border: 1px solid hsl(var(--glass-border) / 0.8);
+  border-radius: 16px;
+  box-shadow: 
+    var(--shadow-xl), 
+    inset 0 1px 0 hsl(0 0% 100% / 0.1);
   padding: 10px;
+  display: flex;
+  gap: 8px;
   opacity: 0;
   visibility: hidden;
   transform: translateX(-50%) scale(0.95);
   transform-origin: top center;
-  transition: all 0.15s ease;
-  z-index: 100;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 9999;
 }
 
 .layout-switcher-wrapper.open .layout-dropdown {
@@ -300,47 +300,37 @@ onUnmounted(() => {
   align-items: center;
   gap: 6px;
   width: 72px;
-  padding: 10px 8px;
+  padding: 8px 6px;
   border: none;
   background: transparent;
-  border-radius: 10px;
-  color: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  color: hsl(var(--text-secondary));
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   position: relative;
 }
 
 .layout-option:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: hsl(var(--primary) / 0.08);
+  color: hsl(var(--text-primary));
 }
 
 .layout-option.active {
-  background: rgba(249, 115, 22, 0.15);
-  color: #f97316;
-}
-
-.layout-option.active::after {
-  content: "";
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #f97316;
-  box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+  background: hsl(var(--local-color) / 0.1);
+  color: hsl(var(--local-color));
+  font-weight: 500;
 }
 
 .layout-option.active .layout-preview {
-  border-color: rgba(249, 115, 22, 0.4);
-  background: rgba(249, 115, 22, 0.08);
+  border-color: hsl(var(--local-color) / 0.3);
+  background: hsl(var(--local-color) / 0.05);
 }
 
 /* 布局预览框 */
 .layout-preview {
   width: 48px;
   height: 36px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(0, 0, 0, 0.2);
   display: flex;
@@ -523,35 +513,6 @@ onUnmounted(() => {
 }
 
 /* 浅色主题适配 */
-[data-theme="light"] .layout-badge {
-  background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 2px 8px -2px rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="light"] .layout-badge:hover {
-  background: rgba(255, 255, 255, 0.75);
-  border-color: rgba(249, 115, 22, 0.4);
-}
-
-[data-theme="light"] .layout-dropdown {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-[data-theme="light"] .layout-option {
-  color: rgba(0, 0, 0, 0.75);
-}
-
-[data-theme="light"] .layout-option:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
 [data-theme="light"] .layout-preview {
   border-color: rgba(0, 0, 0, 0.1);
   background: rgba(0, 0, 0, 0.03);
@@ -564,40 +525,6 @@ onUnmounted(() => {
 }
 
 /* 素描浅色主题适配 */
-[data-theme="sketch-light"] .layout-badge {
-  background: rgba(255, 255, 255, 0.5);
-  border-color: rgba(0, 0, 0, 0.12);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    0 2px 8px -2px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="sketch-light"] .layout-badge:hover {
-  background: rgba(255, 255, 255, 0.65);
-  border-color: rgba(0, 0, 0, 0.15);
-}
-
-[data-theme="sketch-light"] .layout-dropdown {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
-[data-theme="sketch-light"] .layout-option {
-  color: rgba(60, 50, 40, 0.85);
-}
-
-[data-theme="sketch-light"] .layout-option:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-[data-theme="sketch-light"] .layout-option.active::after {
-  background: rgba(60, 50, 40, 0.6);
-  box-shadow: 0 0 6px rgba(60, 50, 40, 0.4);
-}
-
 [data-theme="sketch-light"] .layout-preview {
   border-color: rgba(0, 0, 0, 0.12);
   background: rgba(0, 0, 0, 0.04);
@@ -634,14 +561,6 @@ onUnmounted(() => {
 }
 
 /* 素描深色主题适配 */
-[data-theme="sketch-dark"] .layout-dropdown {
-  background: rgba(35, 30, 25, 0.95);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-}
-
 [data-theme="sketch-dark"] .layout-option.active::after {
   background: rgba(255, 255, 255, 0.5);
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
@@ -682,12 +601,7 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.06);
 }
 
-/* 深色主题适配 */
-[data-theme="dark"] .layout-dropdown {
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-}
+
 
 /* 响应式 */
 @media (max-width: 640px) {

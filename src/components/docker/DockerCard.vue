@@ -566,6 +566,26 @@ const minimalIconBgStyle = computed(() => {
     background 300ms ease;
 }
 
+/* 列表模式基础容器复写 - 更加扁平清爽 */
+.docker-card.layout-list {
+  background: hsl(var(--bg-elevated) / 0.5);
+  border: 1px solid hsl(var(--glass-border) / 0.5);
+  box-shadow: var(--shadow-sm);
+  border-radius: calc(var(--radius-lg) - 2px);
+}
+.docker-card.layout-list:hover {
+  background: hsl(var(--primary) / 0.05);
+  border-color: hsl(var(--glass-border));
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.docker-card.layout-list::before,
+.docker-card.layout-list .card-glow,
+.docker-card.layout-list .card-border-glow,
+.docker-card.layout-list .card-bg-decor {
+  display: none !important; /* 列表模式下去除多余发光层 */
+}
+
 /* 磨砂内层叠加 - 增强通透感 */
 .docker-card::before {
   content: '';
@@ -611,11 +631,7 @@ const minimalIconBgStyle = computed(() => {
 
 /* List 布局 */
 .docker-card.layout-list {
-  padding: 0.75rem 1rem;
-}
-
-.docker-card.layout-list:hover {
-  transform: translateY(-2px) scale(1.005);
+  padding: 0.625rem 1rem;
 }
 
 /* Minimal 布局 */

@@ -289,35 +289,34 @@ function getMemoryBarWidth(value: number): string {
   display: flex;
   align-items: center;
   gap: 6px;
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 10px;
-  font-size: 13px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  font-size: 14px;
   font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid hsl(var(--glass-border));
   cursor: pointer;
-  transition: all 0.2s ease;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: hsl(var(--glass-bg));
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  color: hsl(var(--text-secondary));
   position: relative;
   overflow: hidden;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 8px -2px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm), var(--glass-border-glow);
 }
 
 .overview-badge:hover {
-  background: rgba(0, 0, 0, 0.35);
-  border-color: rgba(6, 182, 212, 0.35);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 2px 8px -2px rgba(0, 0, 0, 0.15),
-    0 0 12px -4px rgba(6, 182, 212, 0.3);
+  background: hsl(var(--glass-bg));
+  border-color: hsl(var(--text-primary) / 0.4);
+  color: hsl(var(--text-primary));
+  box-shadow: 
+    var(--shadow-sm), 
+    0 4px 12px -2px hsl(var(--text-primary) / 0.15);
 }
 
 .badge-icon {
-  font-size: 12px;
+  font-size: 16px;
   color: hsl(var(--text-secondary));
 }
 
@@ -326,11 +325,15 @@ function getMemoryBarWidth(value: number): string {
 }
 
 .switch-icon {
-  font-size: 10px;
-  opacity: 0.7;
+  font-size: 12px;
+  opacity: 0.5;
   margin-left: 2px;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease;
   color: hsl(var(--text-muted));
+}
+
+.overview-badge:hover .switch-icon {
+  opacity: 0.8;
 }
 
 .overview-wrapper.open .switch-icon {
@@ -340,18 +343,18 @@ function getMemoryBarWidth(value: number): string {
 /* 总览面板 */
 .overview-panel {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 8px);
   left: 50%;
   width: 340px;
-  background: rgba(15, 20, 30, 0.88);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: hsl(var(--bg-elevated) / 0.85);
+  backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 30px)) saturate(1.8);
+  border: 1px solid hsl(var(--glass-border) / 0.8);
   border-radius: 16px;
-  box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.03),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 
+    var(--shadow-xl), 
+    inset 0 1px 0 hsl(0 0% 100% / 0.1);
+  padding: 12px;
   opacity: 0;
   visibility: hidden;
   transform: translateX(-50%) translateY(-10px) scale(0.95);
@@ -379,8 +382,10 @@ function getMemoryBarWidth(value: number): string {
     rgba(168, 85, 247, 0.12) 100%
   );
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
   position: relative;
   overflow: hidden;
+  margin-bottom: 4px;
 }
 
 .header-glow {
@@ -490,14 +495,14 @@ function getMemoryBarWidth(value: number): string {
   gap: 10px;
   padding: 8px 10px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: hsl(var(--bg-elevated) / 0.5);
+  border: 1px solid hsl(var(--glass-border) / 0.5);
   transition: all 0.2s ease;
 }
 
 .rank-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: hsl(var(--primary) / 0.08);
+  border-color: hsl(var(--glass-border));
 }
 
 /* 排名第一特殊样式 */
@@ -529,7 +534,7 @@ function getMemoryBarWidth(value: number): string {
   font-size: 11px;
   font-weight: 700;
   color: var(--rank-color);
-  background: rgba(255, 255, 255, 0.05);
+  background: hsl(var(--bg-elevated) / 0.8);
   border: 1px solid var(--rank-color);
   flex-shrink: 0;
   transition: all 0.2s ease;
@@ -566,7 +571,7 @@ function getMemoryBarWidth(value: number): string {
 .rank-bar-wrapper {
   height: 4px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.06);
+  background: hsl(var(--glass-border));
   overflow: hidden;
 }
 
@@ -612,7 +617,7 @@ function getMemoryBarWidth(value: number): string {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.08) 50%,
+    hsl(var(--glass-border)) 50%,
     transparent 100%
   );
 }
@@ -636,6 +641,9 @@ function getMemoryBarWidth(value: number): string {
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  margin-top: 4px;
 }
 
 .footer-line {
@@ -675,7 +683,8 @@ function getMemoryBarWidth(value: number): string {
   justify-content: center;
   padding: 32px 16px;
   gap: 12px;
-  color: rgba(255, 255, 255, 0.45);
+  color: hsl(var(--text-muted));
+  border-radius: 8px;
 }
 
 .empty-icon {
@@ -691,98 +700,8 @@ function getMemoryBarWidth(value: number): string {
 .no-data {
   padding: 16px;
   text-align: center;
-  color: rgba(255, 255, 255, 0.45);
+  color: hsl(var(--text-muted));
   font-size: 12px;
-}
-
-/* 浅色主题适配 */
-[data-theme="light"] .overview-badge {
-  background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 2px 8px -2px rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="light"] .overview-badge:hover {
-  background: rgba(255, 255, 255, 0.75);
-  border-color: rgba(6, 182, 212, 0.4);
-}
-
-[data-theme="light"] .overview-panel {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-[data-theme="light"] .panel-header {
-  background: linear-gradient(
-    135deg,
-    rgba(6, 182, 212, 0.08) 0%,
-    rgba(168, 85, 247, 0.08) 100%
-  );
-  border-bottom-color: rgba(0, 0, 0, 0.05);
-}
-
-[data-theme="light"] .header-title {
-  color: rgba(0, 0, 0, 0.85);
-}
-
-[data-theme="light"] .section-title {
-  color: rgba(0, 0, 0, 0.85);
-}
-
-[data-theme="light"] .rank-item {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.04);
-}
-
-[data-theme="light"] .rank-item:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-[data-theme="light"] .rank-item.rank-1 {
-  background: linear-gradient(
-    135deg,
-    rgba(251, 191, 36, 0.06) 0%,
-    rgba(251, 191, 36, 0.02) 100%
-  );
-  border-color: rgba(251, 191, 36, 0.12);
-}
-
-[data-theme="light"] .rank-name {
-  color: rgba(0, 0, 0, 0.85);
-}
-
-[data-theme="light"] .rank-value {
-  color: rgba(0, 0, 0, 0.6);
-}
-
-[data-theme="light"] .rank-number {
-  background: rgba(0, 0, 0, 0.03);
-}
-
-[data-theme="light"] .rank-bar-wrapper {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-[data-theme="light"] .empty-state,
-[data-theme="light"] .no-data {
-  color: rgba(0, 0, 0, 0.4);
-}
-
-[data-theme="light"] .footer-dots span {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-/* 深色主题 */
-[data-theme="dark"] .overview-panel {
-  box-shadow:
-    0 12px 48px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.03),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 /* 响应式 - 移动端适配 */
