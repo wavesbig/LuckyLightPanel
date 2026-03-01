@@ -15,16 +15,14 @@
 @import './themes/dark.css';
 /* 浅色主题 */
 @import './themes/light.css';
-/* 素描深色主题 */
-@import './themes/sketch-dark.css';
+/* 素描暗色主题 */
+/* @import './themes/sketch-dark.css'; */
 /* 素描浅色主题 */
-@import './themes/sketch-light.css';
+/* @import './themes/sketch-light.css'; */
 
 /* 
  * 扩展主题示例：
  * @import './themes/purple.css';
- * @import './themes/ocean.css';
- * @import './themes/forest.css';
  */
 
 /* ============ 3. 基础样式 ============ */

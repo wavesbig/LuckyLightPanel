@@ -10,7 +10,7 @@ import LayoutSwitcher from "@/components/common/LayoutSwitcher.vue";
 import DockerLayoutSwitcher from "@/components/docker/DockerLayoutSwitcher.vue";
 import ServiceLayoutSwitcher from "@/components/luckyServices/ServiceLayoutSwitcher.vue";
 import DockerOverview from "@/components/docker/DockerOverview.vue";
-import type { Site, DockerContainer, LuckyService, Group } from "@/types";
+import type { Group } from "@/types";
 
 const navStore = useNavStore();
 const configStore = useConfigStore();

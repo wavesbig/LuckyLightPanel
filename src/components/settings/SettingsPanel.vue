@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useConfigStore, PRESET_BACKGROUNDS } from '@/stores/config'
-import { X, Sun, Moon, Pencil, RotateCcw, Palette, Eye, Check, Image, Github, Search, Globe } from 'lucide-vue-next'
+import { X, Sun, Moon, RotateCcw, Palette, Eye, Check, Image, Github, Search, Globe } from 'lucide-vue-next'
 import type { ThemeMode } from '@/types'
 
 // 导入本地图标
@@ -24,17 +24,10 @@ function close() {
 }
 
 // 主题选项
-const themeOptions: { value: ThemeMode; label: string; icon: typeof Sun; color: string }[] = [
+const themeOptions: { value: ThemeMode; label: string; icon: any; color: string }[] = [
   { value: 'light', label: '浅色', icon: Sun, color: 'var(--warning)' },
-  { value: 'dark', label: '深色', icon: Moon, color: 'var(--neon-purple)' },
-  { value: 'sketch-light', label: '素描浅', icon: Pencil, color: 'var(--neon-blue)' },
-  { value: 'sketch-dark', label: '素描深', icon: Pencil, color: 'var(--neon-cyan)' }
+  { value: 'dark', label: '深色', icon: Moon, color: 'var(--neon-purple)' }
 ]
-
-// 是否为素描主题（素描主题不支持自定义背景）
-const isSketchTheme = computed(() => 
-  configStore.theme === 'sketch-light' || configStore.theme === 'sketch-dark'
-)
 
 // 搜索引擎选项（与 SearchBar.vue 保持一致）
 const SEARCH_ENGINES = [
@@ -134,7 +127,7 @@ function saveCustomSearchUrl() {
         </section>
 
         <!-- 背景设置 -->
-        <section v-if="!isSketchTheme" class="settings-section">
+        <section class="settings-section">
           <div class="section-header">
             <span class="section-emoji">🌅</span>
             <h3 class="section-title">背景</h3>
@@ -439,11 +432,16 @@ function saveCustomSearchUrl() {
   gap: 1.5rem;
 }
 
-/* 设置区块 */
+/* 设置区块 (加入内层卡片包裹态) */
 .settings-section {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: hsl(var(--bg-elevated) / 0.4);
+  border: 1px solid hsl(var(--glass-border) / 0.5);
+  border-radius: 16px;
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.05);
 }
 
 .section-header {
@@ -493,8 +491,8 @@ function saveCustomSearchUrl() {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem;
-  border-radius: 0.75rem;
+  padding: 0.75rem 0.5rem;
+  border-radius: 12px;
   border: 1px solid hsl(var(--glass-border));
   background: hsl(var(--glass-bg));
   overflow: hidden;
@@ -536,7 +534,7 @@ function saveCustomSearchUrl() {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 200ms;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   background: hsl(var(--glass-bg));
   color: hsl(var(--text-muted));
 }
@@ -573,9 +571,9 @@ function saveCustomSearchUrl() {
 .bg-option {
   position: relative;
   aspect-ratio: 1;
-  border-radius: 0.75rem;
+  border-radius: 12px;
   overflow: hidden;
-  transition: all 200ms;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   border: 2px solid transparent;
   opacity: 0.7;
 }
@@ -624,12 +622,12 @@ function saveCustomSearchUrl() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem;
-  border-radius: 0.75rem;
-  background: hsl(var(--glass-bg));
-  border: 1px solid hsl(var(--glass-border));
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: hsl(var(--glass-bg) / 0.5);
+  border: 1px solid hsl(var(--glass-border) / 0.5);
   cursor: pointer;
-  transition: background 200ms;
+  transition: all 0.2s ease;
 }
 
 .toggle-item:hover {
@@ -654,7 +652,7 @@ function saveCustomSearchUrl() {
 /* 搜索引擎网格 */
 .engine-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
 }
 
@@ -664,11 +662,11 @@ function saveCustomSearchUrl() {
   align-items: center;
   gap: 0.5rem;
   padding: 0.625rem 0.75rem;
-  border-radius: 0.625rem;
-  border: 1px solid hsl(var(--glass-border));
-  background: hsl(var(--glass-bg));
+  border-radius: 12px;
+  border: 1px solid hsl(var(--glass-border) / 0.5);
+  background: hsl(var(--glass-bg) / 0.5);
   cursor: pointer;
-  transition: all 200ms;
+  transition: all 0.2s ease;
 }
 
 .engine-option-btn:hover {
@@ -677,8 +675,8 @@ function saveCustomSearchUrl() {
 }
 
 .engine-option-btn.active {
-  border-color: hsl(var(--neon-cyan) / 0.5);
   background: hsl(var(--neon-cyan) / 0.1);
+  border-color: hsl(var(--neon-cyan) / 0.4);
 }
 
 .engine-icon-img {
@@ -693,10 +691,14 @@ function saveCustomSearchUrl() {
   font-size: 0.75rem;
   color: hsl(var(--text-secondary));
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .engine-option-btn.active .engine-name {
   color: hsl(var(--neon-cyan));
+  font-weight: 500;
 }
 
 .engine-check {
@@ -721,13 +723,13 @@ function saveCustomSearchUrl() {
 .url-input {
   width: 100%;
   padding: 0.625rem 0.875rem;
-  border-radius: 0.625rem;
-  border: 1px solid hsl(var(--glass-border));
-  background: hsl(var(--glass-bg));
+  border-radius: 12px;
+  border: 1px solid hsl(var(--glass-border) / 0.5);
+  background: hsl(var(--glass-bg) / 0.5);
   color: hsl(var(--text-primary));
   font-size: 0.8125rem;
   outline: none;
-  transition: all 200ms;
+  transition: all 0.2s ease;
 }
 
 .url-input:focus {
