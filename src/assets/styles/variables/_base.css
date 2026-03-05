@@ -2,9 +2,6 @@
    Base Variables - 基础布局变量 (Pro Max)
    ============================================ */
 
-/* 字体系统 - 使用 Inter 替换 Fira */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
 :root {
   /* 字体 */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;

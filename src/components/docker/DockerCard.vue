@@ -568,15 +568,15 @@ const minimalIconBgStyle = computed(() => {
 
 /* 列表模式基础容器复写 - 更加扁平清爽 */
 .docker-card.layout-list {
-  background: hsl(var(--bg-elevated) / 0.5);
-  border: 1px solid hsl(var(--glass-border) / 0.5);
-  box-shadow: var(--shadow-sm);
+  background: hsl(var(--site-card-bg));
+  border: 1px solid hsl(var(--site-card-border));
+  box-shadow: var(--site-card-shadow);
   border-radius: calc(var(--radius-lg) - 2px);
 }
 .docker-card.layout-list:hover {
-  background: hsl(var(--primary) / 0.05);
-  border-color: hsl(var(--glass-border));
-  box-shadow: var(--shadow-md);
+  background: hsl(var(--site-card-bg-hover));
+  border-color: hsl(var(--site-card-border-hover));
+  box-shadow: var(--site-card-shadow-hover);
   transform: translateY(-2px);
 }
 .docker-card.layout-list::before,

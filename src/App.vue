@@ -81,11 +81,12 @@ function getIconUrl(path: string) {
   return `./backend/iconlibs/${path}`;
 }
 
-// 主题切换
+// 主题切换（双轨机制：兼容原有 data-theme + shadcn-vue .dark class）
 watch(
   () => configStore.effectiveTheme,
   (theme) => {
     document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.classList.toggle("dark", theme === "dark");
   },
   { immediate: true },
 );

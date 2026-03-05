@@ -10,6 +10,8 @@ import {
   ChevronRight 
 } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
+import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const configStore = useConfigStore()
 const { currentTab, theme, settingsPanelOpen } = storeToRefs(configStore)
@@ -30,71 +32,98 @@ function toggleTheme() {
 </script>
 
 <template>
-  <aside 
-    class="app-sidebar glass-panel" 
-    :class="{ 'is-collapsed': configStore.sidebarCollapsed }"
-  >
-    <!-- 顶部 Logo 区域 -->
-    <div class="sidebar-header">
-      <div class="logo-wrapper">
-        <div class="logo-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+  <TooltipProvider :delay-duration="200">
+    <aside 
+      class="app-sidebar glass-panel" 
+      :class="{ 'is-collapsed': configStore.sidebarCollapsed }"
+    >
+      <!-- 顶部 Logo 区域 -->
+      <div class="sidebar-header">
+        <div class="logo-wrapper">
+          <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <span class="logo-text" v-show="!configStore.sidebarCollapsed">LightPanel</span>
         </div>
-        <span class="logo-text" v-show="!configStore.sidebarCollapsed">LightPanel</span>
       </div>
-    </div>
 
-    <!-- 导航菜单 -->
-    <nav class="sidebar-nav">
-      <div 
-        v-for="item in navItems" 
-        :key="item.id"
-        class="nav-item"
-        :class="{ active: currentTab === item.id }"
-        @click="switchTab(item.id)"
-      >
-        <div class="nav-icon">
-          <component :is="item.icon" :size="20" />
+      <!-- 导航菜单 -->
+      <nav class="sidebar-nav">
+        <div 
+          v-for="item in navItems" 
+          :key="item.id"
+          class="nav-item"
+          :class="{ active: currentTab === item.id }"
+          @click="switchTab(item.id)"
+        >
+          <div class="nav-icon">
+            <component :is="item.icon" :size="20" />
+          </div>
+          <span class="nav-label" v-show="!configStore.sidebarCollapsed">{{ item.label }}</span>
         </div>
-        <span class="nav-label" v-show="!configStore.sidebarCollapsed">{{ item.label }}</span>
+      </nav>
+
+      <!-- 底部操作区 -->
+      <div class="sidebar-footer">
+        <div class="footer-actions">
+          <!-- 主题切换 -->
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="action-btn"
+                :title="theme === 'dark' ? '切换亮色' : '切换暗色'"
+                @click="toggleTheme"
+              >
+                <Moon v-if="theme === 'dark'" :size="18" />
+                <Sun v-else :size="18" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              {{ theme === 'dark' ? '切换亮色' : '切换暗色' }}
+            </TooltipContent>
+          </Tooltip>
+
+          <!-- 设置按钮 -->
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="action-btn"
+                :class="{ active: settingsPanelOpen }"
+                title="设置"
+                @click="configStore.toggleSettingsPanel()"
+              >
+                <Settings :size="18" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">设置</TooltipContent>
+          </Tooltip>
+
+          <!-- 折叠按钮 -->
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="action-btn collapse-btn"
+                :title="configStore.sidebarCollapsed ? '展开' : '折叠'"
+                @click="configStore.toggleSidebar()"
+              >
+                <ChevronRight v-if="configStore.sidebarCollapsed" :size="18" />
+                <ChevronLeft v-else :size="18" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              {{ configStore.sidebarCollapsed ? '展开侧边栏' : '折叠侧边栏' }}
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
-    </nav>
-
-    <!-- 底部操作区 -->
-    <div class="sidebar-footer">
-      <div class="footer-actions">
-        <!-- 主题切换 -->
-        <button 
-          class="action-btn" 
-          @click="toggleTheme"
-          :title="theme === 'dark' ? '切换亮色' : '切换暗色'"
-        >
-          <Moon v-if="theme === 'dark'" :size="18" />
-          <Sun v-else :size="18" />
-        </button>
-
-        <!-- 设置按钮 -->
-        <button 
-          class="action-btn" 
-          @click="configStore.toggleSettingsPanel()"
-          :class="{ active: settingsPanelOpen }"
-          title="设置"
-        >
-          <Settings :size="18" />
-        </button>
-
-        <!-- 折叠按钮 -->
-        <button 
-          class="action-btn collapse-btn" 
-          @click="configStore.toggleSidebar()"
-          :title="configStore.sidebarCollapsed ? '展开' : '折叠'"
-        >
-          <ChevronRight v-if="configStore.sidebarCollapsed" :size="18" />
-          <ChevronLeft v-else :size="18" />
-        </button>
-      </div>
-    </div>
-  </aside>
+    </aside>
+  </TooltipProvider>
 </template>
 
 <style scoped>

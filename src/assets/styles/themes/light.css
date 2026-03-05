@@ -18,86 +18,92 @@
   --accent-rgb: 13, 148, 136;
 
   /* Neon Accents - Higher Contrast */
-  --neon-cyan: 173 80% 36%;
-  /* Teal-600 */
-  --neon-cyan-rgb: 13, 148, 136;
-  --neon-purple: 244 55% 54%;
-  /* Indigo-500 */
-  --neon-purple-rgb: 99, 102, 241;
-  --neon-pink: 330 81% 56%;
-  /* Rose-500 */
-  --neon-pink-rgb: 244, 63, 94;
-  --neon-blue: 221 83% 53%;
-  /* Blue-500 */
-  --neon-blue-rgb: 59, 130, 246;
-  --neon-green: 142 76% 36%;
-  /* Green-600 */
-  --neon-green-rgb: 22, 163, 74;
+  --neon-cyan: 173 80% 32%;
+  /* Teal-700 - 加深提升浅色下对比度 */
+  --neon-cyan-rgb: 15, 118, 110;
+  --neon-purple: 244 55% 50%;
+  /* Indigo-600 */
+  --neon-purple-rgb: 79, 70, 229;
+  --neon-pink: 330 81% 52%;
+  /* Rose-600 */
+  --neon-pink-rgb: 225, 29, 72;
+  --neon-blue: 221 83% 48%;
+  /* Blue-600 */
+  --neon-blue-rgb: 37, 99, 235;
+  --neon-green: 142 76% 31%;
+  /* Green-700 */
+  --neon-green-rgb: 21, 128, 61;
 
   /* Docker Color */
-  --docker-orange: 25 95% 48%;
-  /* Orange-600 */
-  --docker-orange-rgb: 234, 88, 12;
+  --docker-orange: 25 95% 45%;
+  /* Orange-700 */
+  --docker-orange-rgb: 194, 65, 12;
 
   /* Icon Brightness */
   --icon-brightness: 1;
   --icon-placeholder-bg: 210 40% 96.1% / 0.8;
   /* Slate-100 / 0.8 */
 
-  /* Glassmorphism - Bright & Airy */
-  --glass-bg: 0 0% 100% / 0.75;
-  --glass-bg-hover: 0 0% 100% / 0.85;
-  --glass-border: 210 40% 96.1% / 0.6;
-  /* Slate-100 / 0.6 */
-  --glass-border-glow: 221 83% 53% / 0.2;
-  /* Blue-500 / 0.2 */
-  --glass-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 60%);
+  /* Glassmorphism - 提升不透明度以改善可读性 */
+  --glass-bg: 0 0% 100% / 0.88;
+  /* 75% → 88% */
+  --glass-bg-hover: 0 0% 100% / 0.95;
+  /* 更实的悬浮态 */
+  --glass-border: 214.3 31.8% 82% / 0.9;
+  /* 从 Slate-100 加深到 Slate-300，边框清晰可见 */
+  --glass-border-glow: 221 83% 53% / 0.25;
+  /* Blue-500 / 0.25 */
+  --glass-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 60%);
+  --glass-blur: 20px;
+  --glass-saturation: 130%;
 
-  /* Card Styles */
-  --card-bg: 0 0% 100% / 0.8;
+  /* Card Styles - 更实的卡片背景 */
+  --card-bg: 0 0% 100% / 0.92;
+  /* 80% → 92% */
   --card-shadow:
-    0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px -1px rgb(0 0 0 / 0.1);
+    0 2px 8px 0 rgb(0 0 0 / 0.12),
+    0 1px 3px -1px rgb(0 0 0 / 0.08);
+  /* 加深阴影增加层次感 */
 
   --card-shadow-hover:
-    0 10px 15px -3px rgb(0 0 0 / 0.1),
-    0 4px 6px -4px rgb(0 0 0 / 0.1),
-    0 0 0 1px rgba(37, 99, 235, 0.15);
+    0 12px 24px -4px rgb(0 0 0 / 0.15),
+    0 4px 8px -4px rgb(0 0 0 / 0.08),
+    0 0 0 1px rgba(37, 99, 235, 0.2);
   /* Blue subtle border */
 
-  --card-glow: 0 0 20px -5px rgba(37, 99, 235, 0.1);
+  --card-glow: 0 0 20px -5px rgba(37, 99, 235, 0.12);
+  --card-glow-hover: 0 0 40px -8px rgba(37, 99, 235, 0.25);
 
-  /* Text Colors */
-  --text-primary: 222.2 47.4% 11.2%;
-  /* Slate-900 */
-  --text-secondary: 215.4 16.3% 46.9%;
-  /* Slate-500 */
-  --text-muted: 215.3 19.3% 34.5%;
-  /* Slate-600 ?? wait muted should be lighter? No, Slate-400 is lighter */
-  /* Actually using Slate variables directly is better, but these are HSL values */
-  --text-muted: 215 25% 60%;
-  /* Slate-400 equivalent approx */
+  /* Text Colors - 加深提升对比度 */
+  --text-primary: 222.2 47.4% 9%;
+  /* 接近 Slate-950，更深 */
+  --text-secondary: 215.4 25% 36%;
+  /* Slate-600（原 Slate-500，加深一级）*/
+  --text-muted: 215 20% 52%;
+  /* Slate-500（原 Slate-400，加深一级）*/
 
   /* Backgrounds & Borders */
-  --border-color: 214.3 31.8% 91.4%;
+  --border-color: 214.3 31.8% 82%;
+  /* Slate-300（原 Slate-200，加深）*/
+  --border-subtle: 214.3 31.8% 91.4%;
   /* Slate-200 */
-  --border-subtle: 210 40% 96.1%;
+  --bg-page: 210 40% 96%;
   /* Slate-100 */
-  --bg-page: 210 40% 98%;
-  /* Slate-50 */
   --bg-elevated: 0 0% 100%;
   /* White */
 
-  /* Site Cards */
-  --site-card-bg: 0 0% 100% / 0.65;
-  --site-card-bg-hover: 0 0% 100% / 0.85;
-  --site-card-blur: 16px;
-  --site-card-saturation: 110%;
-  --site-card-border: 214.3 31.8% 91.4% / 0.6;
-  /* Slate-200 */
-  --site-card-border-hover: 221 83% 53% / 0.4;
+  /* Site Cards - 提升不透明度 */
+  --site-card-bg: 0 0% 100% / 0.82;
+  /* 65% → 82% */
+  --site-card-bg-hover: 0 0% 100% / 0.96;
+  --site-card-blur: 20px;
+  --site-card-saturation: 120%;
+  --site-card-border: 214.3 31.8% 80% / 0.85;
+  /* 边框更清晰 */
+  --site-card-border-hover: 221 83% 53% / 0.5;
   /* Blue-500 */
-  --site-card-inner-glow: 255 255 255 / 0.5;
-  --site-card-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --site-card-shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --site-card-inner-glow: 255 255 255 / 0.6;
+  --site-card-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.08);
+  /* 加深阴影 */
+  --site-card-shadow-hover: 0 12px 24px -4px rgb(0 0 0 / 0.15);
 }
